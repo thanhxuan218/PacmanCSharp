@@ -1,6 +1,7 @@
 using PacmanWindowForms.Forms;
 using System.Windows.Forms;
-
+using PacmanWindowForms.Scripts.Controllers;
+using PacmanWindowForms.Scripts;
 
 namespace PacmanWindowForms
 {
@@ -13,6 +14,7 @@ namespace PacmanWindowForms
 
         private void frmMenu_Load(object sender, EventArgs e)
         {
+            GameController.Instance.onStartGame();
             if (this.Visible == false)
             {
                 this.Visible = true;
@@ -22,9 +24,11 @@ namespace PacmanWindowForms
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            frmGameBoard form = new frmGameBoard();
-            form.StartPosition = FormStartPosition.CenterScreen;
-            form.Show();
+            //GameController.Instance.onStartGame();
+
+            //frmGameBoard form = new frmGameBoard();
+            //form.StartPosition = FormStartPosition.CenterScreen;
+            //form.Show();
             this.Hide();
         }
     }

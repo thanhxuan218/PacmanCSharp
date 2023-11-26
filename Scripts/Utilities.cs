@@ -4,9 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Diagnostics;
 
 namespace PacmanWindowForms.Scripts
 {
+
+    class Logger
+    {
+        public static void Log(string message)
+        {
+            StackFrame frame = new StackFrame(1);
+            string currentTime = DateTime.Now.ToString("yy-MM-dd HH:mm:ss.fff");
+            var methodName = frame.GetMethod().Name;
+            var codeLine = frame.GetFileLineNumber();
+            Console.WriteLine(currentTime + ": " + methodName +":" + codeLine + "\t:" + message);
+        }
+    }
+
+
     public class Utilities
     {
         // Start a timer with specified interval, and execute the specified action when the timer expires
@@ -34,6 +49,27 @@ namespace PacmanWindowForms.Scripts
                 }
             });
             timerThread.Start();
+        }
+
+        public static string GetRealFilePath(string fileName)
+        {
+            return Path.Combine(GetProjectDirectory(), fileName);
+        }
+
+        public static string GetProjectDirectory()
+        {
+            // Project dir is Path of
+            return Path.GetFullPath(Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\"));
+        }
+
+        public static string GetFullPathResource(string fileName)
+        {
+            return Path.Combine(GetProjectDirectory(), "Resource", fileName);
+        }
+
+        public static string GetFullPathMap(string fileName)
+        {
+            return Path.Combine(GetProjectDirectory(), "Resource", "Maps", fileName);
         }
     }
 }

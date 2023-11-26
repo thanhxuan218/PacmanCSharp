@@ -1,4 +1,5 @@
-﻿namespace PacmanWindowForms
+﻿
+namespace PacmanWindowForms
 {
     partial class frmMenu
     {

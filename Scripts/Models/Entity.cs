@@ -27,6 +27,8 @@ namespace PacmanWindowForms.Scripts.Models
         public int width { get; set; }
         public int height { get; set; }
 
+        public bool isPointsChanged = true;
+
         public Entity(EntityType type, Point position, int width, int height)
         {
             this.entityType = type;
@@ -37,7 +39,7 @@ namespace PacmanWindowForms.Scripts.Models
 
         // Method for drawing the entity on the screen
         // This method is abstract because each entity has its own way of drawing
-        public abstract void Draw(Graphics g);
+        public abstract void Draw();
 
         // Method for changing the entity's state
         // This method is abstract because each entity has its own way of changing state
@@ -65,6 +67,11 @@ namespace PacmanWindowForms.Scripts.Models
         public void AddPoint(Point point)
         {
             points.Add(point);
+        }
+
+        public void SetIsPointsChanged(bool isPointsChanged)
+        {
+            this.isPointsChanged = isPointsChanged;
         }
     }
 
@@ -149,6 +156,7 @@ namespace PacmanWindowForms.Scripts.Models
         public void SetPosition(Point position)
         {
             this.position = position;
+            this.UpdatePoints();
         }
 
         public Point GetPosition()

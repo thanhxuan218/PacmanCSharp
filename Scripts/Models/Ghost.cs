@@ -18,7 +18,7 @@ namespace PacmanWindowForms.Scripts.Models
             this.state = DynamicEntityState.Normal;
         }
 
-        public override void Draw(Graphics g)
+        public override void Draw()
         {
             // Draw the ghost on the screen using List<Point> points
             // For each point in points, draw a rectangle with width and height

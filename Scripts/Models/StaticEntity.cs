@@ -1,8 +1,10 @@
-﻿using System;
+﻿using PacmanWindowForms.Scripts.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PacmanWindowForms.Scripts.Views;
 
 namespace PacmanWindowForms.Scripts.Models
 {
@@ -11,12 +13,14 @@ namespace PacmanWindowForms.Scripts.Models
         public Border(int width, int height) : base(EntityType.Border, width, height)
         {
         }
-        public override void Draw(Graphics g)
+        public override void Draw()
         {
             // Draw the border on the screen using List<Point> points
             // For each point in points, draw a rectangle with width and height
             // The color of the rectangle is blue
             // The border is drawn on the screen only when the game state differs from GameState.Init
+            isPointsChanged = false;
+
         }
 
         public override void ChangeState()
@@ -46,19 +50,24 @@ namespace PacmanWindowForms.Scripts.Models
     {
         public Wall(int width, int height) : base(EntityType.Wall, width, height)
         {
+            isPointsChanged = true;
         }
-        public override void Draw(Graphics g)
+        public override void Draw()
         {
             // Draw the wall on the screen using List<Point> points
             // For each point in points, draw a rectangle with width and height
             // The color of the rectangle is black
             // The wall is drawn on the screen only when the game state differs from GameState.Init
+            if (isPointsChanged)
+                Displayer.Instance.onRequestDisplay(points, EntityType.Wall);
+            isPointsChanged = false;
         }
 
         public override void ChangeState()
         {
             // The wall does not change state
             // Do nothing
+            this.Draw();
         }
         public override bool CheckCollision(Entity entity)
         {
@@ -84,12 +93,17 @@ namespace PacmanWindowForms.Scripts.Models
         public Dot(int width, int height) : base(EntityType.Dot, width, height)
         {
         }
-        public override void Draw(Graphics g)
+        public override void Draw()
         {
             // Draw the dot on the screen using List<Point> points
             // For each point in points, draw a rectangle with width and height
             // The color of the rectangle is yellow
             // The dot is drawn on the screen only when the game state differs from GameState.Init
+            if (isPointsChanged)
+                Displayer.Instance.onRequestDisplay(points, EntityType.Dot);
+            
+            isPointsChanged = false;
+
         }
 
         public override void ChangeState()
@@ -139,12 +153,13 @@ namespace PacmanWindowForms.Scripts.Models
         public Energy(int width, int height) : base(EntityType.Energy, width, height)
         {
         }
-        public override void Draw(Graphics g)
+        public override void Draw()
         {
             // Draw the energy on the screen using List<Point> points
             // For each point in points, draw a rectangle with width and height
             // The color of the rectangle is yellow
             // The energy is drawn on the screen only when the game state differs from GameState.Init
+            isPointsChanged = false;
         }
 
         public override void ChangeState()

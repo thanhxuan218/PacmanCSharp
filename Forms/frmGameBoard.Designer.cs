@@ -46,6 +46,8 @@
             // 
             // pnlGameBoard
             // 
+            pnlGameBoard.BackColor = SystemColors.Desktop;
+            pnlGameBoard.BackgroundImageLayout = ImageLayout.None;
             pnlGameBoard.Location = new Point(10, 73);
             pnlGameBoard.Name = "pnlGameBoard";
             pnlGameBoard.Size = new Size(522, 576);
@@ -66,11 +68,11 @@
             // lblLevel
             // 
             lblLevel.AutoSize = true;
-            lblLevel.Font = new Font("Gill Sans Ultra Bold", 13F, FontStyle.Regular, GraphicsUnit.Point);
+            lblLevel.Font = new Font("Microsoft Sans Serif", 13F, FontStyle.Regular, GraphicsUnit.Point);
             lblLevel.ForeColor = SystemColors.HighlightText;
             lblLevel.Location = new Point(198, 31);
             lblLevel.Name = "lblLevel";
-            lblLevel.Size = new Size(27, 26);
+            lblLevel.Size = new Size(20, 22);
             lblLevel.TabIndex = 3;
             lblLevel.Text = "1";
             lblLevel.TextAlign = ContentAlignment.MiddleRight;
@@ -78,11 +80,11 @@
             // lblLevelText
             // 
             lblLevelText.AutoSize = true;
-            lblLevelText.Font = new Font("Gill Sans Ultra Bold", 15F, FontStyle.Regular, GraphicsUnit.Point);
+            lblLevelText.Font = new Font("Microsoft Sans Serif", 15F, FontStyle.Regular, GraphicsUnit.Point);
             lblLevelText.ForeColor = SystemColors.HighlightText;
             lblLevelText.Location = new Point(171, 2);
             lblLevelText.Name = "lblLevelText";
-            lblLevelText.Size = new Size(78, 29);
+            lblLevelText.Size = new Size(59, 25);
             lblLevelText.TabIndex = 2;
             lblLevelText.Text = "Level";
             lblLevelText.Click += label1_Click;
@@ -90,11 +92,11 @@
             // lblScore
             // 
             lblScore.AutoSize = true;
-            lblScore.Font = new Font("Gill Sans Ultra Bold", 13F, FontStyle.Regular, GraphicsUnit.Point);
+            lblScore.Font = new Font("Microsoft Sans Serif", 13F, FontStyle.Regular, GraphicsUnit.Point);
             lblScore.ForeColor = SystemColors.HighlightText;
             lblScore.Location = new Point(59, 31);
             lblScore.Name = "lblScore";
-            lblScore.Size = new Size(27, 26);
+            lblScore.Size = new Size(20, 22);
             lblScore.TabIndex = 1;
             lblScore.Text = "0";
             lblScore.TextAlign = ContentAlignment.MiddleRight;
@@ -103,11 +105,11 @@
             // lblScoreText
             // 
             lblScoreText.AutoSize = true;
-            lblScoreText.Font = new Font("Gill Sans Ultra Bold", 15F, FontStyle.Regular, GraphicsUnit.Point);
+            lblScoreText.Font = new Font("Microsoft Sans Serif", 15F, FontStyle.Regular, GraphicsUnit.Point);
             lblScoreText.ForeColor = SystemColors.HighlightText;
             lblScoreText.Location = new Point(26, 2);
             lblScoreText.Name = "lblScoreText";
-            lblScoreText.Size = new Size(93, 29);
+            lblScoreText.Size = new Size(83, 25);
             lblScoreText.TabIndex = 0;
             lblScoreText.Text = "SCORE";
             // 

@@ -71,6 +71,19 @@ namespace PacmanWindowForms.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pacman 1 1 1 3
+        ///Ghost 1 1 1 9999 Red
+        ///Ghost 1 1 1 9999 Blue
+        ///Ghost 1 1 1 9999 Pink
+        ///Ghost 1 1 1 9999 Orange.
+        /// </summary>
+        internal static string cfg_1 {
+            get {
+                return ResourceManager.GetString("cfg_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap logo_2 {
@@ -87,6 +100,23 @@ namespace PacmanWindowForms.Properties {
             get {
                 object obj = ResourceManager.GetObject("logo4", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 00000000000000000000000000000000000000000000000000000000
+        ///01111111111111111111111111100111111111111111111111111110
+        ///01111111111111111111111111100111111111111111111111111110
+        ///01121212121212121212121212100112121212121212121212121210
+        ///01111111111111111111111111100111111111111111111111111110
+        ///01121000000112100000000112111112100000000112100000011210
+        ///01111011110111101111110111111111101111110111101111011110
+        ///01121011110112101111110112121212101111110112101111011210
+        ///011110000001111000000001111111111000000001111000 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string map_1 {
+            get {
+                return ResourceManager.GetString("map_1", resourceCulture);
             }
         }
         
