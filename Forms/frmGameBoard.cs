@@ -13,27 +13,12 @@ namespace PacmanWindowForms.Forms
             InitializeComponent();
         }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void frmGameBoard_Load(object sender, EventArgs e)
         {
 
             Logger.Log("Game board loaded");
             pnlGameBoard.Paint += new PaintEventHandler(pnlGameBoard_Paint);
-            
+
             Displayer.Instance.onUpdateBoardSize(ref pnlGameBoard, pnlGameBoard.Width, pnlGameBoard.Height);
 
         }
@@ -52,13 +37,46 @@ namespace PacmanWindowForms.Forms
 
         private void pnlGameBoard_Paint(object sender, PaintEventArgs e)
         {
+            Logger.Log("onPaint");
             var g = e.Graphics;
             var p = sender as Panel;
             if (GameController.Instance.IsOnChane())
             {
                 GameController.Instance.DrawBoard();
             }
-               
+        }
+
+        private Direction GetDirectionByKey(Keys keys)
+        {
+            switch (keys)
+            {
+                case Keys.Left:
+                    return Direction.Left;
+                case Keys.Right:
+                    return Direction.Right;
+                case Keys.Up:
+                    return Direction.Up;
+                case Keys.Down:
+                    return Direction.Down;
+                default:
+                return Direction.None;
+            }
+        }
+
+        private void frmPacmanGame_KeyDown(object sender, KeyEventArgs e)
+        {
+            Logger.Log("onKeyDown Press with key" + e.KeyCode);
+            switch (e.KeyCode)
+            {
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Left:
+                case Keys.Right:
+                    ((DynamicEntity)EntityFactory.Instance.GetEntity(EntityType.Pacman, "")).SetDirection(GetDirectionByKey(e.KeyCode));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

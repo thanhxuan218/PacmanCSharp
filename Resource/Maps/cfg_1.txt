@@ -1,5 +1,5 @@
 Pacman 26 39 30 3
-Ghost 1 1 1 9999 Red
-Ghost 1 1 1 9999 Blue
-Ghost 1 1 1 9999 Pink
-Ghost 1 1 1 9999 Yellow
+Ghost 30 28 1 9999 Red
+Ghost 26 28 1 9999 Blue
+Ghost 26 21 1 9999 Pink
+Ghost 22 28 1 9999 Yellow

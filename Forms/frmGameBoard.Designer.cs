@@ -52,7 +52,6 @@
             pnlGameBoard.Name = "pnlGameBoard";
             pnlGameBoard.Size = new Size(522, 576);
             pnlGameBoard.TabIndex = 0;
-            pnlGameBoard.Paint += panel1_Paint;
             // 
             // pnlScoreBoard
             // 
@@ -87,7 +86,6 @@
             lblLevelText.Size = new Size(59, 25);
             lblLevelText.TabIndex = 2;
             lblLevelText.Text = "Level";
-            lblLevelText.Click += label1_Click;
             // 
             // lblScore
             // 
@@ -100,7 +98,6 @@
             lblScore.TabIndex = 1;
             lblScore.Text = "0";
             lblScore.TextAlign = ContentAlignment.MiddleRight;
-            lblScore.Click += label2_Click;
             // 
             // lblScoreText
             // 
@@ -179,6 +176,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Pacman";
             Load += frmGameBoard_Load;
+            KeyDown += frmPacmanGame_KeyDown;
             pnlScoreBoard.ResumeLayout(false);
             pnlScoreBoard.PerformLayout();
             pnlAliveBoard.ResumeLayout(false);

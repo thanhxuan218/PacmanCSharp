@@ -13,25 +13,16 @@ namespace PacmanWindowForms.Scripts.Controllers
 {
     public class GameController
     {
-
-        // Public fields
-
-
-
         // Private fields
         private MapController mapController = null;
-
         private static GameController gameController = null;
-
         private frmGameBoard gameBoardFrm = null;
-
         private Displayer displayer = null;
-
         private int level = 1; // Default level is 1
-
         private GameState gameState = GameState.Init;
-
         private bool haveDisplayRequet = true;
+
+        private List<Task> monitorDynamicTasks = new List<Task>();
 
         // Public methods
         public static GameController Instance
@@ -45,36 +36,21 @@ namespace PacmanWindowForms.Scripts.Controllers
                 return gameController;
             }
         }
-        public void onStartGame()
+        public void onStartGame(frmGameBoard frmGameBoard)
         {
             Logger.Log("Game started");
             // Create a new map controller to load map in case the game is restarted
             if (mapController == null) { mapController = MapController.Instance; }
             if (displayer == null) { displayer = Displayer.Instance; }
-            // Load map according to the level
 
-            // TODO: please complete this method
-            
             mapController.onLoadMap(this.level);
-
-            gameBoardFrm = new frmGameBoard();
-            gameBoardFrm.StartPosition = FormStartPosition.CenterScreen;
             
             // Set game state to playing
             this.SetGameState(GameState.Playing);
-            Thread.Sleep(10);
+            Displayer.Instance.setPanel(frmGameBoard.GetPanelGameBoard());
+            Displayer.Instance.SetParentForm(frmGameBoard);
 
-            gameBoardFrm.SuspendLayout();
-
-            gameBoardFrm.ResumeLayout(false);
-            Displayer.Instance.setPanel(gameBoardFrm.GetPanelGameBoard());
-            Displayer.Instance.SetParentForm(gameBoardFrm);
-            Logger.Log(gameBoardFrm.GetPanelGameBoard().GetHashCode().ToString());
-            Logger.Log(Displayer.Instance.pnl.GetHashCode().ToString());
-
-            EntityFactory.Instance.SetIsPointsChanged(EntityType.Wall, "", true);   
-
-            gameBoardFrm.Show();
+            frmGameBoard.Show();
         }
 
         // This method is used to set the game state
@@ -105,14 +81,33 @@ namespace PacmanWindowForms.Scripts.Controllers
             EntityFactory.Instance.Draw();
         }
 
+        public void RequestDisplay()
+        {
+            lock (this)
+            {
+                haveDisplayRequet = true;
+            }
+        }
+
         public bool IsOnChane()
         {
-            if (haveDisplayRequet)
+            lock (this)
             {
-                haveDisplayRequet = false;
-                return true;
+                Logger.Log("Is on change");
+                if (haveDisplayRequet)
+                {
+                    haveDisplayRequet = false;
+                    return true;
+                }
+                return false;
             }
-            return false;
         }
+
+        public GameState GetGameState()
+        {
+            return gameState;
+        }
+
+        
     }
 }

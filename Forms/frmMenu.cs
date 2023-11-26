@@ -14,7 +14,7 @@ namespace PacmanWindowForms
 
         private void frmMenu_Load(object sender, EventArgs e)
         {
-            GameController.Instance.onStartGame();
+            //GameController.Instance.onStartGame();
             if (this.Visible == false)
             {
                 this.Visible = true;
@@ -24,12 +24,17 @@ namespace PacmanWindowForms
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            //GameController.Instance.onStartGame();
+            frmGameBoard form = new frmGameBoard();
+            form.StartPosition = FormStartPosition.CenterScreen;
+            GameController.Instance.onStartGame(form);
 
-            //frmGameBoard form = new frmGameBoard();
-            //form.StartPosition = FormStartPosition.CenterScreen;
-            //form.Show();
+            form.Show();
             this.Hide();
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

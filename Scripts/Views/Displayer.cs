@@ -19,7 +19,7 @@ namespace PacmanWindowForms.Scripts.Views
         public Form parentForm = null;
         public Panel pnl = null;
         public Graphics g = null;
-        
+
         public int boardHeight = 0;
         public int boardWidth = 0;
 
@@ -28,11 +28,6 @@ namespace PacmanWindowForms.Scripts.Views
 
         public float cellHeightOffset = 0;
         public float cellWidthOffset = 0;
-
-        private PictureBox picRedGhost;
-        private PictureBox picBlueGhost;
-        private PictureBox picPinkGhost;
-        private PictureBox picYellowGhost;
 
         public static Displayer Instance
         {
@@ -49,7 +44,7 @@ namespace PacmanWindowForms.Scripts.Views
             }
         }
 
-        public void onRequestDisplay(List<Point> points, EntityType type, string postfix="")
+        public void onRequestDisplay(List<Point> points, EntityType type, string postfix = "")
         {
             lock (padlock)
             {
@@ -91,16 +86,77 @@ namespace PacmanWindowForms.Scripts.Views
         private void DrawPacman(List<Point> points)
         {
             Logger.Log("Enter DrawPacman() points: " + points.Count);
-            for(int i = 0; i < points.Count; i++)
+            for (int i = 0; i < points.Count; i++)
             {
                 Logger.Log("Draw Pacman at point: " + points[i].ToString());
                 DrawCircle(points[i], cellWidth, cellHeight, cellHeight, System.Drawing.Color.Yellow);
             }
         }
 
+        private PictureBox picRedGhost;
+        private PictureBox picBlueGhost;
+        private PictureBox picPinkGhost;
+        private PictureBox picYellowGhost;
 
         private void DrawGhost(List<Point> points, string postfix)
         {
+            GhostColor color = GhostColor.None;
+            DynamicEntityState state = DynamicEntityState.Normal;
+            Direction direction = Direction.Down;
+            PictureBox pic = null;
+
+            if (postfix == "")
+            {
+                Logger.Log("Invalid ghost postfix");
+                return;
+            }
+
+            if (postfix == "Red")
+            {
+                color = GhostColor.Red;
+                pic = picRedGhost;
+            }
+            else if (postfix == "Blue")
+            {
+                color = GhostColor.Blue;
+                pic = picBlueGhost;
+            }
+            else if (postfix == "Pink")
+            {
+                color = GhostColor.Pink;
+                pic = picPinkGhost;
+            }
+            else if (postfix == "Yellow")
+            {
+                color = GhostColor.Yellow;
+                pic = picYellowGhost;
+            }
+            else
+            {
+                Logger.Log("Invalid ghost postfix");
+                return;
+            }
+
+            if (points.Count == 0)
+            {
+                Logger.Log("Invalid ghost points");
+                return;
+            }
+
+            Bitmap img = FindGhostImage(color, state, direction);
+            if (img == null)
+            {
+                Logger.Log($"Can not find image for {color.ToString()} state {state.ToString()} direction {direction.ToString()}");
+                return;
+            }
+
+            if (pic != null) pnl.Controls.Remove(pic);
+            pic = new PictureBox();
+            pic.BackgroundImageLayout = ImageLayout.Zoom;
+            pic.Location = new Point((int)(points[0].X * cellWidth + 4), (int)(points[0].Y * cellHeight + 4));
+            pic.Size = new Size((int)(4 * cellWidth) - 6, (int)(4 * cellHeight) - 6);
+            pic.BackgroundImage = img;
+            pnl.Controls.Add(pic);
         }
 
         private void DrawWall(List<Point> points)
@@ -160,7 +216,7 @@ namespace PacmanWindowForms.Scripts.Views
 
         public Panel getPanel()
         {
-            lock(padlock)
+            lock (padlock)
             {
                 return pnl;
             }
@@ -201,8 +257,8 @@ namespace PacmanWindowForms.Scripts.Views
                 Rectangle rect = new Rectangle((int)(p.X * width + 5), (int)(p.Y * height + 5), (int)(cellWidth * 4 - 8), (int)(cellHeight * 4 - 8));
                 lock (this)
                 {
-                    g.FillEllipse(bb, p.X* width,p.Y * height, cellWidth * 4, cellHeight * 4);
-                    g.FillPie(b, rect, 24, 310);               
+                    g.FillEllipse(bb, p.X * width, p.Y * height, cellWidth * 4, cellHeight * 4);
+                    g.FillPie(b, rect, 24, 310);
                 }
             }
         }
@@ -226,22 +282,51 @@ namespace PacmanWindowForms.Scripts.Views
         }
 
 
-        Dictionary<GhostColor, Dictionary<Direction, Image>> imgNormal = new Dictionary<GhostColor, Dictionary<Direction, Image>>
+        private readonly Dictionary<GhostColor, Dictionary<Direction, Image>> imgNormal = new Dictionary<GhostColor, Dictionary<Direction, Image>>
         {
-            {
-                GhostColor.Red, new Dictionary<Direction, Image>
+            { GhostColor.Red, new Dictionary<Direction, Image>
                 {
-                    { Direction.Up, Properties.Resources.pngegg_2 }
+                    { Direction.Up, Properties.Resources.RedGhostUp1 },
+                    { Direction.Down, Properties.Resources.RedGhostDown1 },
+                    { Direction.Left, Properties.Resources.RedGhostLeft1 },
+                    { Direction.Right, Properties.Resources.RedGhostRight1 }
+                }
+            },
+            { GhostColor.Blue, new Dictionary<Direction, Image>
+                {
+                    { Direction.Up, Properties.Resources.BlueGhostUp1 },
+                    { Direction.Down, Properties.Resources.BlueGhostDown1 },
+                    { Direction.Left, Properties.Resources.BlueGhostLeft1 },
+                    { Direction.Right, Properties.Resources.BlueGhostRight1 }
+                }
+            },
+            { GhostColor.Yellow, new Dictionary<Direction, Image>
+                {
+                    { Direction.Up, Properties.Resources.YellowGhostUp1 },
+                    { Direction.Down, Properties.Resources.YellowGhostDown1 },
+                    { Direction.Left, Properties.Resources.YellowGhostLeft1 },
+                    { Direction.Right, Properties.Resources.YellowGhostRight1 }
+                }
+            },
+            { GhostColor.Pink, new Dictionary<Direction, Image>
+                {
+                    { Direction.Up, Properties.Resources.PinkGhostUp1 },
+                    { Direction.Down, Properties.Resources.PinkGhostDown1 },
+                    { Direction.Left, Properties.Resources.PinkGhostLeft1 },
+                    { Direction.Right, Properties.Resources.PinkGhostRight1 }
                 }
             }
         };
 
         private Bitmap FindGhostNormalImg(GhostColor color, Direction d)
         {
-
-
-
-
+            if (imgNormal.ContainsKey(color))
+            {
+                if (imgNormal[color].ContainsKey(d))
+                {
+                    return new Bitmap(imgNormal[color][d]);
+                }
+            }
             return null;
         }
 

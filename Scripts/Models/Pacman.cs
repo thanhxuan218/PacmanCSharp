@@ -1,7 +1,9 @@
-﻿using PacmanWindowForms.Scripts.Views;
+﻿using PacmanWindowForms.Scripts.Controllers;
+using PacmanWindowForms.Scripts.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +26,7 @@ namespace PacmanWindowForms.Scripts.Models
             // The pacman is drawn on the screen only when the game state differs from GameState.Init
             if (isPointsChanged)
             {
+                Logger.Log("Pacman is drawing");
                 Displayer.Instance.onRequestDisplay(new List<Point>() { position }, EntityType.Pacman);
             }
             isPointsChanged = false;
@@ -44,6 +47,7 @@ namespace PacmanWindowForms.Scripts.Models
 
         public override void Move()
         {
+
         }
     }
 }

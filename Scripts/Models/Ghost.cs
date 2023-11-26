@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PacmanWindowForms.Scripts.Models;
+using PacmanWindowForms.Scripts.Views;
 
 namespace PacmanWindowForms.Scripts.Models
 {
@@ -24,6 +25,17 @@ namespace PacmanWindowForms.Scripts.Models
             // For each point in points, draw a rectangle with width and height
             // The color of the rectangle is determined by the ghost's color
             // The ghost is drawn on the screen only when the game state differs from GameState.Init
+            Logger.Log("Ghost is drawing");
+            if (isPointsChanged)
+            {
+                Logger.Log($"Ghost is drawing at: {position.X}, {position.Y}"); 
+                Displayer.Instance.onRequestDisplay(new List<Point>() { position }, EntityType.Ghost, ghostColor.ToString());
+            }
+            else
+            {
+                isPointsChanged = false;
+            }
+            
         }
 
         public override void ChangeState()
@@ -67,6 +79,7 @@ namespace PacmanWindowForms.Scripts.Models
             // Move the ghost
             // The ghost moves in a random direction
             // The ghost only moves when the game state is GameState.Playing, other request in other game states are ignored
+            Logger.Log("Ghost is moving");
         }
 
         public override void Reset()

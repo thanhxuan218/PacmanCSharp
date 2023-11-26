@@ -114,12 +114,15 @@ namespace PacmanWindowForms.Scripts.Models
             }
         }
 
-        public void SetIsPointsChanged(EntityType type, string postfix, bool isPointsChanged)
+        public void DynamicEntityStartMoving()
         {
-            string key = type.ToString() + postfix;
-            if (entities.ContainsKey(key))
+            // Start moving for dynamic entities
+            foreach (KeyValuePair<string, Entity> entry in entities)
             {
-                entities[key].SetIsPointsChanged(isPointsChanged);
+                if (entry.Value.entityType == EntityType.Pacman || entry.Value.entityType == EntityType.Ghost)
+                {
+                    ((DynamicEntity)entry.Value).Move();
+                }
             }
         }
     }

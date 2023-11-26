@@ -246,6 +246,7 @@ namespace PacmanWindowForms.Scripts.Controllers
                 {
                     ((Ghost)entity).SetGhostColor(this.GetGhostColor(dynamicPostfix));
                 }
+                Logger.Log($"Load entity {entityType} at ({x}, {y}) with speed {speed} and lives {lives}");
             }
             Logger.Log("Load dynamic entities successfully");
             return 0;

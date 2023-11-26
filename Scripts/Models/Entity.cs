@@ -103,6 +103,7 @@ namespace PacmanWindowForms.Scripts.Models
         // Position of the entity is the top left corner of the entity
         private void UpdatePoints()
         {
+            Logger.Log("onUpdatePoints for entity" + entityType);
             this.points.Clear();
             for (int i = 0; i < this.width; i++)
             {
