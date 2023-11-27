@@ -42,8 +42,8 @@ namespace PacmanWindowForms.Scripts.Models
                 return 2;
             }
 
-           string key = entity.entityType.ToString() + postfix;
-            
+            string key = entity.entityType.ToString() + postfix;
+
             if (entities.ContainsKey(key))
             {
                 return 1;
@@ -61,20 +61,19 @@ namespace PacmanWindowForms.Scripts.Models
             {
                 case EntityType.Pacman:
                     return new Pacman(new Point(0, 0), 0, 0, Direction.None, 0, 0);
-                    case EntityType.Ghost:
-                        return new Ghost(GhostColor.None, new Point(0, 0), 0, 0);
-                    case EntityType.Wall:
-                        return new Wall(0, 0);
-                    case EntityType.Dot:
-                        return new Dot(0, 0);
-                    case EntityType.Border:
-                        return new Border(0, 0);
+                case EntityType.Ghost:
+                    return new Ghost(GhostColor.None, new Point(0, 0), 0, 0);
+                case EntityType.Wall:
+                    return new Wall(0, 0);
+                case EntityType.Dot:
+                    return new Dot(0, 0);
+                case EntityType.Border:
+                    return new Border(0, 0);
                 case EntityType.Energy:
                     return new Energy(0, 0);
                 default:
                     return null;
             }
-            return null;
         }
 
         public Entity GetEntity(EntityType entityType, string postfix)
@@ -91,8 +90,8 @@ namespace PacmanWindowForms.Scripts.Models
         {
             foreach (KeyValuePair<string, Entity> entry in entities)
             {
-                // TODO: Notify game state changed for each entity
                 Logger.Log("Notify game state changed for :" + entry.Key);
+                entry.Value.onChangeGameState(gameState);
             }
         }
 

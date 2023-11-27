@@ -38,7 +38,7 @@ namespace PacmanWindowForms.Scripts.Models
             
         }
 
-        public override void ChangeState()
+        public override void onChangeGameState(GameState state)
         {
             // Change the state of the ghost
             // At the beginning of the game, the ghost is in Normal state

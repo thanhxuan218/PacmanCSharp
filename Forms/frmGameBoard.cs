@@ -8,6 +8,9 @@ namespace PacmanWindowForms.Forms
 {
     public partial class frmGameBoard : Form
     {
+        public delegate void FrmGameBoardClosedHandler(object sender, FormClosedEventArgs e, string text);
+        public event FrmGameBoardClosedHandler frmGameBoardClosed;
+
         public frmGameBoard()
         {
             InitializeComponent();
@@ -32,7 +35,7 @@ namespace PacmanWindowForms.Forms
         // On close form
         private void frmGameBoard_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Application.Exit();
+            frmGameBoardClosed(sender, e, "Game board closed");
         }
 
         private void pnlGameBoard_Paint(object sender, PaintEventArgs e)
@@ -40,10 +43,7 @@ namespace PacmanWindowForms.Forms
             Logger.Log("onPaint");
             var g = e.Graphics;
             var p = sender as Panel;
-            if (GameController.Instance.IsOnChane())
-            {
-                GameController.Instance.DrawBoard();
-            }
+            GameController.Instance.DrawBoard();
         }
 
         private Direction GetDirectionByKey(Keys keys)
@@ -59,7 +59,7 @@ namespace PacmanWindowForms.Forms
                 case Keys.Down:
                     return Direction.Down;
                 default:
-                return Direction.None;
+                    return Direction.None;
             }
         }
 
@@ -73,6 +73,16 @@ namespace PacmanWindowForms.Forms
                 case Keys.Left:
                 case Keys.Right:
                     ((DynamicEntity)EntityFactory.Instance.GetEntity(EntityType.Pacman, "")).SetDirection(GetDirectionByKey(e.KeyCode));
+                    break;
+                case Keys.Space:
+                    if (GameController.Instance.GetGameState() == GameState.Paused)
+                    {
+                        GameController.Instance.NotifyGameStateChanged(GameState.Running);
+                    }
+                    else if (GameController.Instance.GetGameState() == GameState.Running)
+                    {
+                        GameController.Instance.NotifyGameStateChanged(GameState.Paused);
+                    }
                     break;
                 default:
                     break;

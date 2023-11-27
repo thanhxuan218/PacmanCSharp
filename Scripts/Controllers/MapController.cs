@@ -58,8 +58,8 @@ namespace PacmanWindowForms.Scripts.Controllers
             this.ResetEntities();
 
             // Load new data
-            this.LoadStaticEntities();
-            this.LoadDynamicEntities();
+            // this.LoadStaticEntities();
+            // this.LoadDynamicEntities();
 
             return 0;
         }
@@ -84,8 +84,6 @@ namespace PacmanWindowForms.Scripts.Controllers
                     return EntityType.None;
             }
         }
-
-
 
         // This method is used to load all static entities from the map file
         // return 0 on success, other is error code
@@ -119,8 +117,8 @@ namespace PacmanWindowForms.Scripts.Controllers
                 string line = lines[i];
                 if (line.Length != this.mapWidth)
                 {
-                    Logger.Log("Map file is missmatching!!! Please check again line " + i);
-                   // return -1;
+                    Logger.Log("Map file is miss matching!!! Please check again line " + i);
+                    // return -1;
                 }
                 for (int j = 0; j < this.mapWidth; j++)
                 {
@@ -156,7 +154,6 @@ namespace PacmanWindowForms.Scripts.Controllers
             Logger.Log("Load static entities successfully");
             return 0;
         }
-
 
         private GhostColor GetGhostColor(string color)
         {
@@ -205,7 +202,7 @@ namespace PacmanWindowForms.Scripts.Controllers
             {
                 string line = lines[i];
                 string[] tokens = line.Split(' ');
-                
+
                 string identify = tokens[0];
                 if (identify.ToLower() != "pacman" && identify.ToLower() != "ghost")
                 {
@@ -247,6 +244,7 @@ namespace PacmanWindowForms.Scripts.Controllers
                     ((Ghost)entity).SetGhostColor(this.GetGhostColor(dynamicPostfix));
                 }
                 Logger.Log($"Load entity {entityType} at ({x}, {y}) with speed {speed} and lives {lives}");
+                // Add the entity to the map
             }
             Logger.Log("Load dynamic entities successfully");
             return 0;
@@ -259,8 +257,6 @@ namespace PacmanWindowForms.Scripts.Controllers
             EntityFactory.Instance.Reset();
         }
         public void onDestroyMap() { }
-
-
         public int GetBoardHeight()
         {
             return this.mapHeight;
@@ -270,5 +266,80 @@ namespace PacmanWindowForms.Scripts.Controllers
         {
             return this.mapWidth;
         }
+
+        List<Point> wallPoints = new List<Point>();
+        List<Point> dotPoints = new List<Point>();
+        List<Point> energyPoints = new List<Point>();
+        List<Point> pacmanPoints = new List<Point>();
+        List<Point> ghostPoints = new List<Point>();
+
+        public EntityType IsWall(Point point)
+        {
+            if (wallPoints.Contains(point))
+            {
+                return EntityType.Wall;
+            }
+            return EntityType.None;
+        }
+
+        public EntityType IsDot(Point point)
+        {
+            if (dotPoints.Contains(point))
+            {
+                return EntityType.Dot;
+            }
+            return EntityType.None;
+        }
+
+        public EntityType IsEnergy(Point point)
+        {
+            if (energyPoints.Contains(point))
+            {
+                return EntityType.Energy;
+            }
+            return EntityType.None;
+        }
+
+        public EntityType IsPacman(Point point)
+        {
+            if (pacmanPoints.Contains(point))
+            {
+                return EntityType.Pacman;
+            }
+            return EntityType.None;
+        }
+
+        public EntityType IsGhost(Point point)
+        {
+            if (ghostPoints.Contains(point))
+            {
+                return EntityType.Ghost;
+            }
+            return EntityType.None;
+        }
+
+        public void RemoveDot(Point point)
+        {
+            if (dotPoints.Contains(point))
+            {
+                dotPoints.Remove(point);
+            }
+        }
+
+        public void RemoveEnergy(Point point)
+        {
+            if (energyPoints.Contains(point))
+            {
+                energyPoints.Remove(point);
+            }
+        }
+        public void RemovePacman(Point point)
+        {
+            if (pacmanPoints.Contains(point))
+            {
+                pacmanPoints.Remove(point);
+            }
+        }
+
     }
 }

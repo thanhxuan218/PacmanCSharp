@@ -1,4 +1,5 @@
-﻿using PacmanWindowForms.Forms;
+﻿using Microsoft.VisualBasic.Logging;
+using PacmanWindowForms.Forms;
 using PacmanWindowForms.Scripts.Controllers;
 using PacmanWindowForms.Scripts.Models;
 using System;
@@ -46,8 +47,9 @@ namespace PacmanWindowForms.Scripts.Views
 
         public void onRequestDisplay(List<Point> points, EntityType type, string postfix = "")
         {
-            lock (padlock)
+            lock (this)
             {
+                Logger.Log("Enter onRequestDisplay() for " + type.ToString() + " " + postfix);
                 if (pnl == null)
                 {
                     Logger.Log("Panel is null");

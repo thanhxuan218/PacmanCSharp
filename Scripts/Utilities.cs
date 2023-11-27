@@ -17,7 +17,7 @@ namespace PacmanWindowForms.Scripts
             string currentTime = DateTime.Now.ToString("yy-MM-dd HH:mm:ss.fff");
             var methodName = frame.GetMethod().Name;
             var codeLine = frame.GetFileLineNumber();
-            Console.WriteLine(currentTime + ": " + methodName +":" + codeLine + "\t:" + message);
+            Console.WriteLine(currentTime + ": " + methodName + ":" + codeLine + "\t:" + message);
         }
     }
 

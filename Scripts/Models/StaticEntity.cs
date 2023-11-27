@@ -23,7 +23,7 @@ namespace PacmanWindowForms.Scripts.Models
 
         }
 
-        public override void ChangeState()
+        public override void onChangeGameState(GameState state)
         {
             // The border does not change state
             // Do nothing
@@ -58,12 +58,10 @@ namespace PacmanWindowForms.Scripts.Models
             // For each point in points, draw a rectangle with width and height
             // The color of the rectangle is black
             // The wall is drawn on the screen only when the game state differs from GameState.Init
-            if (isPointsChanged)
-                Displayer.Instance.onRequestDisplay(points, EntityType.Wall);
-            isPointsChanged = false;
+            Displayer.Instance.onRequestDisplay(points, EntityType.Wall);
         }
 
-        public override void ChangeState()
+        public override void onChangeGameState(GameState state)
         {
             // The wall does not change state
             // Do nothing
@@ -101,12 +99,12 @@ namespace PacmanWindowForms.Scripts.Models
             // The dot is drawn on the screen only when the game state differs from GameState.Init
             if (isPointsChanged)
                 Displayer.Instance.onRequestDisplay(points, EntityType.Dot);
-            
+
             isPointsChanged = false;
 
         }
 
-        public override void ChangeState()
+        public override void onChangeGameState(GameState state)
         {
             // if (gameState == GameState.Playing)
             // {
@@ -162,7 +160,7 @@ namespace PacmanWindowForms.Scripts.Models
             isPointsChanged = false;
         }
 
-        public override void ChangeState()
+        public override void onChangeGameState(GameState state)
         {
         }
 

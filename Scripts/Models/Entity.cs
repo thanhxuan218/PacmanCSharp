@@ -7,12 +7,12 @@ using System.Drawing;
 
 namespace PacmanWindowForms.Scripts.Models
 {
-    public enum EntityType { Pacman, Ghost, Wall, Dot, Border, Energy, None }
-    public enum GameState { Init, Playing, Paused, GameOver, Win }
-    public enum DynamicEntityState { Normal, Special, Dead, Respawn }
-    public enum StaticEntityState { Normal, Eaten, None }
-    public enum Direction { Up, Down, Left, Right, None }
-    public enum GhostColor { Red, Blue, Yellow, Pink, None }
+    // public enum EntityType { Pacman, Ghost, Wall, Dot, Border, Energy, None }
+    // public enum GameState { Init, Running, Paused, GameOver, Win }
+    // public enum DynamicEntityState { Normal, Special, Dead, Respawn }
+    // public enum StaticEntityState { Normal, Eaten, None }
+    // public enum Direction { Up, Down, Left, Right, None }
+    // public enum GhostColor { Red, Blue, Yellow, Pink, None }
 
     // Base class for all entities
     public abstract class Entity
@@ -43,7 +43,7 @@ namespace PacmanWindowForms.Scripts.Models
 
         // Method for changing the entity's state
         // This method is abstract because each entity has its own way of changing state
-        public abstract void ChangeState();
+        public abstract void onChangeGameState(GameState state);
 
         // Method for checking collision between two entities
         // This method is abstract because each entity has its own way of checking collision

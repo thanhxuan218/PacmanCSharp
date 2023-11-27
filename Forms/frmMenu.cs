@@ -26,10 +26,16 @@ namespace PacmanWindowForms
         {
             frmGameBoard form = new frmGameBoard();
             form.StartPosition = FormStartPosition.CenterScreen;
+            form.FormClosed += (s, args) => { frmGameBoard_Closed(s, args, "Game board closed"); };
             GameController.Instance.onStartGame(form);
-
             form.Show();
             this.Hide();
+        }
+
+        private void frmGameBoard_Closed(object sender, FormClosedEventArgs e, string text)
+        {
+            Logger.Log(text);
+            this.Show();
         }
 
         private void btnExit_Click(object sender, EventArgs e)

@@ -1,3 +1,5 @@
+using PacmanWindowForms.Scripts.Models;
+
 namespace PacmanWindowForms
 {
     internal static class Program
@@ -10,9 +12,9 @@ namespace PacmanWindowForms
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new frmMenu());
-
+            // ApplicationConfiguration.Initialize();
+            // Application.Run(new frmMenu());
+            PacmanWindowForms.Scripts.Models_refactor.GameController.Instance.onStartGame(100, 100);
         }
     }
 }
