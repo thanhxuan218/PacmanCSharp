@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using PacmanWindowForms.Scripts.Models;
+using Microsoft.VisualBasic.Logging;
 
 namespace PacmanWindowForms.Scripts.Models_refactor
 {
@@ -50,7 +51,9 @@ namespace PacmanWindowForms.Scripts.Models_refactor
 
         public void SetPosition(Point position)
         {
+            GameBoard.Instance.RemoveEntityAt(this.entityType, this.entityParams.position);
             this.entityParams.position = position;
+            GameBoard.Instance.AddEntityAt(this.entityType, this.entityParams.position);
             this.UpdatePoints();
         }
 
@@ -92,6 +95,11 @@ namespace PacmanWindowForms.Scripts.Models_refactor
         }
 
         public abstract void StartMoving();
+
+        public void Print()
+        {
+            Logger.Log("Entity type: " + entityType + " position: " + entityParams.position + " direction: " + entityParams.direction + " speed: " + entityParams.speed);
+        }
     }
 
     public class Pacman : EntityBase
@@ -119,6 +127,8 @@ namespace PacmanWindowForms.Scripts.Models_refactor
         private bool isDead = false;
         private Task movingTask = null;
         private int lives = 4;
+        private DynamicEntityState state = DynamicEntityState.Normal;
+
         private Pacman(EntityParams entityParams)
         : base(EntityType.Pacman, entityParams)
         {
@@ -137,7 +147,6 @@ namespace PacmanWindowForms.Scripts.Models_refactor
                 {
                     if (this.GetDirection() == Direction.None)
                     {
-                        continue;
                     }
 
                     // TODO: Add logic to check current game state
@@ -152,15 +161,11 @@ namespace PacmanWindowForms.Scripts.Models_refactor
                     {
                         this.SetPosition(nextPosition);
                     }
-                    else
-                    {
-                        this.SetDirection(Direction.None);
-                    }
                     if (currentPosition != this.GetPosition())
                     {
                         this.NotifyPacmanMoving();
                     }
-                    System.Threading.Thread.Sleep(1000 / this.GetSpeed());
+                    System.Threading.Thread.Sleep(this.GetSpeed());
                 }
             });
         }
@@ -172,6 +177,22 @@ namespace PacmanWindowForms.Scripts.Models_refactor
         public int GetLives()
         {
             return this.lives;
+        }
+
+        public void SetState(DynamicEntityState state)
+        {
+            lock (this)
+            {
+                this.state = state;
+            }
+        }
+
+        public DynamicEntityState GetState()
+        {
+            lock (this)
+            {
+                return this.state;
+            }
         }
 
         private void NotifyPacmanDead()
@@ -200,6 +221,29 @@ namespace PacmanWindowForms.Scripts.Models_refactor
             this.SetEntityParams(GameBoard.Instance.GetGhostParams()[color]);
         }
 
+        private Direction FindNewPossibleDirection()
+        {
+            List<Direction> possibleDirections = new List<Direction>();
+            foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+            {
+                if (direction == Direction.None)
+                {
+                    continue;
+                }
+                Point nextPosition = GameBoard.Instance.NextLocation(this.GetPosition(), direction);
+                if (GameBoard.Instance.IsPossibleLocation(nextPosition))
+                {
+                    possibleDirections.Add(direction);
+                }
+            }
+            if (possibleDirections.Count == 0)
+            {
+                return Direction.None;
+            }
+            Random random = new Random();
+            return possibleDirections[random.Next(possibleDirections.Count)];
+        }
+
         public override void StartMoving()
         {
             this.UpdatePoints();
@@ -228,18 +272,23 @@ namespace PacmanWindowForms.Scripts.Models_refactor
                     if (GameBoard.Instance.IsPossibleLocation(nextPosition))
                     {
                         this.SetPosition(nextPosition);
+                        // Logger.Log("Ghost is moving to curr: " + this.GetPosition() + " next: " + nextPosition + "curr dir: " + this.GetDirection());
                     }
                     else
                     {
-                        this.SetDirection(Direction.None);
+                        this.SetDirection(FindNewPossibleDirection());
+                        continue;
                     }
+
                     if (currentPosition != this.GetPosition())
                     {
+                        // Logger.Log("Ghost is moving to position: " + this.GetPosition());
                         this.NotifyGhostMoving();
                     }
-                    System.Threading.Thread.Sleep(1000 / this.GetSpeed());
+                    System.Threading.Thread.Sleep(this.GetSpeed());
                 }
             });
+            Logger.Log("Ghost StartMoving");
         }
 
         public GhostColor GetColor()
@@ -291,6 +340,7 @@ namespace PacmanWindowForms.Scripts.Models_refactor
             {
                 ghosts[color] = new Ghost(ghostParams[color], color);
             }
+            Logger.Log($"GhostFactory LoadGhosts {ghosts.Count}");
         }
 
         public Direction GetDirection(GhostColor color)
@@ -350,7 +400,7 @@ namespace PacmanWindowForms.Scripts.Models_refactor
             foreach (GhostColor color in ghosts.Keys)
             {
                 points.AddRange(ghosts[color].GetPoints());
-                Logger.Log(" GetAllPoints Ghost position: " + ghosts[color].GetPosition());
+                // Logger.Log(" GetAllPoints Ghost position: " + ghosts[color].GetPosition());
             }
             return points;
         }
@@ -361,6 +411,8 @@ namespace PacmanWindowForms.Scripts.Models_refactor
             {
                 ghosts[color].LoadNew();
             }
+
+            Logger.Log($"GhostFactory LoadNew {ghosts.Count}");
         }
 
         public Ghost GetGhostByPosition(Point position)
@@ -385,6 +437,14 @@ namespace PacmanWindowForms.Scripts.Models_refactor
                 }
             }
             return null;
+        }
+
+        public void Print()
+        {
+            foreach (GhostColor color in ghosts.Keys)
+            {
+                ghosts[color].Print();
+            }
         }
     }
 

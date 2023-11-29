@@ -27,7 +27,7 @@ namespace PacmanWindowForms
             frmGameBoard form = new frmGameBoard();
             form.StartPosition = FormStartPosition.CenterScreen;
             form.FormClosed += (s, args) => { frmGameBoard_Closed(s, args, "Game board closed"); };
-            GameController.Instance.onStartGame(form);
+            PacmanWindowForms.Scripts.Models_refactor.GameController.Instance.onStartGame(100, 100);
             form.Show();
             this.Hide();
         }

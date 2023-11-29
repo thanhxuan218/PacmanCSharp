@@ -78,13 +78,13 @@ namespace PacmanWindowForms.Scripts.Models_refactor
             List<Point> commonPoints = new List<Point>();
             commonPoints = ghostPoints.Intersect(wallPoints).ToList();
 
-            Logger.Log("CheckCollisionGhostAndWall: commonPoints.Count = " + commonPoints.Count);
-            Logger.Log("Wall points: " + wallPoints + " ghost points: " + ghostPoints);
-            Logger.Log("Wall points: " + wallPoints.Count + " ghost points: " + ghostPoints.Count);
+            // Logger.Log("CheckCollisionGhostAndWall: commonPoints.Count = " + commonPoints.Count);
+            // Logger.Log("Wall points: " + wallPoints + " ghost points: " + ghostPoints);
+            // Logger.Log("Wall points: " + wallPoints.Count + " ghost points: " + ghostPoints.Count);
 
             if (commonPoints.Count > 0)
             {
-                Logger.Log("Collision detected between ghost and wall");
+                // Logger.Log("Collision detected between ghost and wall");
                 Ghost ghost = GhostFactory.Instance.GetGhostByPoints(commonPoints);
                 this.NotifyCollisionDetected(5, commonPoints, ghost);
             }
@@ -161,7 +161,8 @@ namespace PacmanWindowForms.Scripts.Models_refactor
 
         public void NotifyCollisionDetected(int collisionType, List<Point> collisionPoints, EntityBase entity = null)
         {
-            Logger.Log($"Collision detected {collisionType}");
+            // Logger.Log($"Collision detected {collisionType}");
+            GameController.Instance.onNotifyCollisionDetected(collisionType, collisionPoints, entity);
         }
     }
 }

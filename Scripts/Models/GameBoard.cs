@@ -17,6 +17,11 @@ namespace PacmanWindowForms.Scripts.Models
         public int speed = 0;
         public Direction direction = Direction.None;
         public int lives = 0;
+
+        public override string ToString()
+        {
+            return "Position: " + position.ToString() + " Width: " + width + " Height: " + height + " Speed: " + speed + " Direction: " + direction.ToString() + " Lives: " + lives;
+        }
     }
 
     public class GameBoard
@@ -49,22 +54,31 @@ namespace PacmanWindowForms.Scripts.Models
 
         public int RemoveEntityAt(EntityType type, Point loc)
         {
-            if (entityLocs.ContainsKey(type))
+            lock (this)
             {
-                entityLocs[type].Remove(loc);
-                return 0;
+                // Logger.Log($"onRequest Remove entity {type} at {loc}");
+                if (entityLocs.ContainsKey(type))
+                {
+                    // Logger.Log($"Remove entity {type} at {loc}");
+                    entityLocs[type].Remove(loc);
+                    return 0;
+                }
+                return -1;
             }
-            return -1;
         }
-
         public int AddEntityAt(EntityType type, Point loc)
         {
-            if (entityLocs.ContainsKey(type))
+            lock (this)
             {
-                entityLocs[type].Add(loc);
-                return 0;
+                // Logger.Log($"onRequest Add entity {type} at {loc}");
+                if (entityLocs.ContainsKey(type))
+                {
+                    // Logger.Log($"Add entity {type} at {loc}");
+                    entityLocs[type].Add(loc);
+                    return 0;
+                }
+                return -1;
             }
-            return -1;
         }
 
         public void CleanUp()
@@ -123,24 +137,31 @@ namespace PacmanWindowForms.Scripts.Models
 
         public Point NextLocation(Point loc, Direction direction)
         {
-            Point nextLoc = new Point(loc.X, loc.Y);
+            Point nextLoc;
             switch (direction)
             {
                 case Direction.Up:
-                    nextLoc.Y--;
+                    // Logger.Log("Direction: Up");
+                    nextLoc = new Point(loc.X, loc.Y - 1);
                     break;
                 case Direction.Down:
-                    nextLoc.Y++;
+                    // Logger.Log("Direction: Down");
+                    nextLoc = new Point(loc.X, loc.Y + 1);
                     break;
                 case Direction.Left:
-                    nextLoc.X--;
+                    // Logger.Log("Direction: Left");
+                    nextLoc = new Point(loc.X - 1, loc.Y);
                     break;
                 case Direction.Right:
-                    nextLoc.X++;
+                    // Logger.Log("Direction: Right");
+                    nextLoc = new Point(loc.X + 1, loc.Y);
                     break;
                 default:
+                    // Logger.Log("Direction: None");
+                    nextLoc = new Point(loc.X, loc.Y);
                     break;
             }
+            // Logger.Log("NextLocation: " + nextLoc.ToString());
             return nextLoc;
         }
 
@@ -161,35 +182,38 @@ namespace PacmanWindowForms.Scripts.Models
         /// </summary>
         public void PrintMap()
         {
-            for (int row = 0; row < GetMapHeight(); row++)
+            lock (this)
             {
-                for (int col = 0; col < GetMapWidth(); col++)
+                for (int row = 0; row < GetMapHeight(); row++)
                 {
-                    Point loc = new Point(col, row);
-                    EntityType type = EntityTypeAt(loc);
-                    switch (type)
+                    for (int col = 0; col < GetMapWidth(); col++)
                     {
-                        case EntityType.Wall:
-                            Console.Write("0");
-                            break;
-                        case EntityType.Dot:
-                            Console.Write("2");
-                            break;
-                        case EntityType.Energy:
-                            Console.Write("8");
-                            break;
-                        case EntityType.Pacman:
-                            Console.Write("p");
-                            break;
-                        case EntityType.Ghost:
-                            Console.Write("g");
-                            break;
-                        default:
-                            Console.Write(" ");
-                            break;
+                        Point loc = new Point(col, row);
+                        EntityType type = EntityTypeAt(loc);
+                        switch (type)
+                        {
+                            case EntityType.Wall:
+                                Console.Write("0");
+                                break;
+                            case EntityType.Dot:
+                                Console.Write("2");
+                                break;
+                            case EntityType.Energy:
+                                Console.Write("8");
+                                break;
+                            case EntityType.Pacman:
+                                Console.Write("p");
+                                break;
+                            case EntityType.Ghost:
+                                Console.Write("g");
+                                break;
+                            default:
+                                Console.Write(" ");
+                                break;
+                        }
                     }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
             }
         }
     }
@@ -300,7 +324,7 @@ namespace PacmanWindowForms.Scripts.Models
                 int height = int.Parse(tokens[4]);
                 int speed = int.Parse(tokens[5]);
                 int lives = int.Parse(tokens[6]);
-                Direction direction = (Direction)Enum.Parse(typeof(Direction), tokens[6]);
+                Direction direction = (Direction)Enum.Parse(typeof(Direction), tokens[7]);
 
                 EntityParams entityParams = new EntityParams()
                 {
@@ -342,6 +366,14 @@ namespace PacmanWindowForms.Scripts.Models
                 }
             }
             Logger.Log("Map config file is loaded successfully");
+            Logger.Log("Pacman params: " + this.pacmanParams.ToString());
+
+            foreach (KeyValuePair<GhostColor, EntityParams> entry in this.ghostParams)
+            {
+                Logger.Log("Ghost params: " + entry.Value.ToString());
+            }
+
+
             return retCode;
         }
 

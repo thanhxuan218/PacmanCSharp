@@ -171,11 +171,21 @@ namespace PacmanWindowForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pacman 26 39 30 3
-        ///Ghost 1 1 1 9999 Red
-        ///Ghost 1 1 1 9999 Blue
-        ///Ghost 1 1 1 9999 Pink
-        ///Ghost 1 1 1 9999 Yellow.
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BlueGhostUp2 {
+            get {
+                object obj = ResourceManager.GetObject("BlueGhostUp2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to P 26 39 1 1 30 30 0
+        ///G 30 28 3 3 1000 9999 0 0
+        ///G 26 28 3 3 1000 9999 1 1
+        ///G 26 21 3 3 1000 9999 2 2
+        ///G 22 28 3 3 1000 9999 3 3.
         /// </summary>
         internal static string cfg_1 {
             get {
@@ -219,6 +229,16 @@ namespace PacmanWindowForms.Properties {
         internal static System.Drawing.Bitmap eyesUp {
             get {
                 object obj = ResourceManager.GetObject("eyesUp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GhostScare {
+            get {
+                object obj = ResourceManager.GetObject("GhostScare", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -317,6 +337,87 @@ namespace PacmanWindowForms.Properties {
             get {
                 object obj = ResourceManager.GetObject("pacman_alive1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Pacman_Dies {
+            get {
+                return ResourceManager.GetStream("Pacman_Dies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Pacman_Eating_Cherry {
+            get {
+                return ResourceManager.GetStream("Pacman_Eating_Cherry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Pacman_Eating_Ghost {
+            get {
+                return ResourceManager.GetStream("Pacman_Eating_Ghost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Pacman_Extra_Live {
+            get {
+                return ResourceManager.GetStream("Pacman_Extra_Live", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Pacman_Intermission {
+            get {
+                return ResourceManager.GetStream("Pacman_Intermission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Pacman_Opening_Song {
+            get {
+                return ResourceManager.GetStream("Pacman_Opening_Song", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Pacman_Siren {
+            get {
+                return ResourceManager.GetStream("Pacman_Siren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Pacman_Waka_Waka {
+            get {
+                return ResourceManager.GetStream("Pacman_Waka_Waka", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Pacman_Waka_Waka_Cut {
+            get {
+                return ResourceManager.GetStream("Pacman_Waka_Waka_Cut", resourceCulture);
             }
         }
         
