@@ -1,7 +1,5 @@
 using PacmanWindowForms.Forms;
 using System.Windows.Forms;
-using PacmanWindowForms.Scripts.Controllers;
-using PacmanWindowForms.Scripts;
 
 namespace PacmanWindowForms
 {
@@ -27,14 +25,12 @@ namespace PacmanWindowForms
             frmGameBoard form = new frmGameBoard();
             form.StartPosition = FormStartPosition.CenterScreen;
             form.FormClosed += (s, args) => { frmGameBoard_Closed(s, args, "Game board closed"); };
-            PacmanWindowForms.Scripts.Models_refactor.GameController.Instance.onStartGame(100, 100);
             form.Show();
             this.Hide();
         }
 
         private void frmGameBoard_Closed(object sender, FormClosedEventArgs e, string text)
         {
-            Logger.Log(text);
             this.Show();
         }
 
