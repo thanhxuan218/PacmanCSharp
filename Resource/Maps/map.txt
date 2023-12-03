@@ -1,0 +1,64 @@
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+x                          xx                          x
+x                          xx                          x
+x  o o o o o o o o o o o o xx  o o o o o o o o o o o o x
+x                          xx                          x
+x  o xxxxxx  o xxxxxxxx  o     o xxxxxxxx  o xxxxxx  o x
+x    x    x    x      x          x      x    x    x    x
+x  o x    x  o x      x  o o o o x      x  o x    x  o x
+x    xxxxxx    xxxxxxxx          xxxxxxxx    xxxxxx    x
+x  o         o           o xx  o           o         o x
+x                          xx                          x
+x  o o b o o o o o o o o o xx  o o o o o o o o b o o o x
+x                          xx                          x
+x  o xxxxxx  o xx  o xxxxxxxxxxxxxx  o xx  o xxxxxx  o x
+x    xxxxxx    xx    xxxxxxxxxxxxxx    xx    xxxxxx    x
+x  o         o xx  o       xx        o xx  o         o x
+x              xx          xx          xx              x
+x  o o o o o o xx  o o o o xx  o o o o xx  o o o o o o x
+x              xx          xx          xx              x
+xxxxx  o xx  o xxxxxxxx  o xx  o xxxxxxxx  o xx  o xxxxx
+xxxxx    xx    xxxxxxxx    xx    xxxxxxxx    xx    xxxxx
+x      o xx  o           o     o           o xx  o     x
+x        xx                                  xx        x
+x  o o o xx  o o o o o o o o o o o o o o o o xx  o o o x
+x        xx                                  xx        x
+x  o xxxxxx  o xx  o BDDDDDDDDDDDDB  o xx  o xxxxxx  o x
+x    xxxxxx    xx    BXXXXXXXXXXXXB    xx    xxxxxx    x
+x  o         o xx  o BXXXXXXXXXXXXB  o xx  o         o x
+x              xx    BXXXXXXXXXXXXB    xx              x
+x  o o o o o o xx  o BXXXXXXXXXXXXB  o xx  o o o o o o x
+x              xx    BXXXXXXXXXXXXB    xx              x
+x  o xxxxxx  o xx  o BXXXXXXXXXXXXB  o xx  o xxxxxx  o x
+x    xxxxxx    xx    BBBBBBBBBBBBBB    xx    xxxxxx    x
+x  o     xx  o xx  o                 o xx  o xx      o x
+x        xx    xx                      xx    xx        x
+x  o o o xx  o xx  o o o o o o o o o o xx  o xx  o o o x
+x        xx    xx                      xx    xx        x
+xxxxx  o xx  o xx  o xxxxxxxxxxxxxx  o xx  o xx  o xxxxx
+xxxxx    xx    xx    xxxxxxxxxxxxxx    xx    xx    xxxxx
+x      o     o     o                 o     o     o     x
+x                                                      x
+x  o o o o o o o o o o o o o o o o o o o o o o o b o o x
+x                                                      x
+x  o xxxxxx  o xxxxxxxx  o xx  o xxxxxxxx  o xxxxxx  o x
+x    xxxxxx    xxxxxxxx    xx    xxxxxxxx    xxxxxx    x
+x  o     xx  o           o xx  o           o xx      o x
+x        xx                xx                xx        x
+x  o o o xx  o o o o o o o xx  o o o o o o o xx  o o o x
+x        xx                xx                xx        x
+xxxxx  o xx  o xx  o xxxxxxxxxxxxxx  o xx  o xx  o xxxxx
+xxxxx    xx    xx    xxxxxxxxxxxxxx    xx    xx    xxxxx
+x      o     o xx  o       xx        o xx  o     o     x
+x              xx          xx          xx              x
+x  o o b o o o xx  o o o o xx  o o o o xx  o o o o o o x
+x              xx          xx          xx              x
+x  o xxxxxx  o xxxxxxxx  o xx  o xxxxxxxx  o xxxxxx  o x
+x    xxxxxx    xxxxxxxx    xx    xxxxxxxx    xxxxxx    x
+x  o         o           o     o           o         o x
+x                                                      x
+x  o o o o o o o o o o o o o o o o o o o o o o o o o o x
+x                                                      x
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                                                        
+                                                        
