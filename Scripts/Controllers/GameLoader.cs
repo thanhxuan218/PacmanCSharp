@@ -141,7 +141,7 @@ namespace PacmanWindowForms.Script.Models
             this.boardWidth = mapBuffer.Split('\n')[0].Length;
             this.boardHeight = mapBuffer.Split('\n').Length;
 
-            MessageBox.Show($"Load map with size {this.boardWidth}x{this.BoardHeight}");
+            // MessageBox.Show($"Load map with size {this.boardWidth}x{this.BoardHeight}");
 
             isLoaded = true;
             isLoading = false;

@@ -9,6 +9,7 @@ using System.IO;
 using PacmanWindowForms.Script.Models;
 using PacmanWindowForms.Script.Views;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace PacmanWindowForms.Script.Models
 {
@@ -54,21 +55,30 @@ namespace PacmanWindowForms.Script.Models
                             bonusStateCounter = 0;
                         }
                     }
-                    catch (Exception ex) 
-                    { MessageBox.Show("StaticEntityStart" + ex.ToString()); }
+                    catch (Exception ex)
+                    { 
+                        MessageBox.Show("StaticEntityStart" + ex.ToString()); 
+                    }
                 }
             });
         }
 
-       
+
 
         public void DrawDots()
         {
-            lock(dotList)
+            lock (dotList)
             {
-                foreach (Point p in dotList)
+                try
                 {
-                    board.DrawDot(p, Color.White);
+                    foreach (Point p in dotList)
+                    {
+                        board.DrawDot(p, Color.White);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"DrawDot() exception with {e}");
                 }
             }
         }
@@ -77,9 +87,16 @@ namespace PacmanWindowForms.Script.Models
         {
             lock (this)
             {
-                foreach (Point p in bonusList)
+                try
                 {
-                    board.DrawBonus(p, Color.White, this.bonusStateCounter);
+                    foreach (Point p in bonusList)
+                    {
+                        board.DrawBonus(p, Color.White, this.bonusStateCounter);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"DrawBonus() exception with {e}");
                 }
             }
         }
@@ -87,9 +104,16 @@ namespace PacmanWindowForms.Script.Models
         private bool isDrawWalls = false;
         public void DrawWalls()
         {
-            foreach (Point p in wallList)
+            try
             {
-                board.DrawRect(p, Color.RoyalBlue);
+                foreach (Point p in wallList)
+                {
+                    board.DrawRect(p, Color.RoyalBlue);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"DrawWalls() exception with {e}");
             }
         }
 
@@ -112,9 +136,17 @@ namespace PacmanWindowForms.Script.Models
         {
             if (bonusList.Count > 0)
             {
-                foreach (Point p in bonusList)
+                try
                 {
-                    board.ClearBonus(p);
+
+                    foreach (Point p in bonusList)
+                    {
+                        board.ClearBonus(p);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"BonusClear() exception with {e}");
                 }
             }
         }

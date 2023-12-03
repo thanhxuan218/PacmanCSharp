@@ -134,7 +134,7 @@ namespace PacmanWindowForms.Forms
 
         private void frmGameBoard_Shown(object sender, EventArgs e)
         {
-            MessageBox.Show("frmGameBoard_Shown is called");
+            //MessageBox.Show("frmGameBoard_Shown is called");
             if (gameController == null) return;
                 gameController.Run();
         }

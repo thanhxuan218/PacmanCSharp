@@ -131,9 +131,7 @@ namespace PacmanWindowForms.Script.Controllers
             Ghosts[GhostColor.Pink].Initialize();
             Ghosts[GhostColor.Yellow].Initialize();
 
-            MessageBox.Show($"wallList {wallList.Count}, dotList {dotList.Count}, boxList {boxList.Count}, boxDoorList {boxDoorList.Count}, bonusList {bonusList.Count}");
-
-
+            //MessageBox.Show($"wallList {wallList.Count}, dotList {dotList.Count}, boxList {boxList.Count}, boxDoorList {boxDoorList.Count}, bonusList {bonusList.Count}");
             State = GameState.GameOver;
             score = 0;
             PacmanSpeed = 80;
