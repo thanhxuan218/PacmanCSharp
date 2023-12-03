@@ -81,8 +81,6 @@ namespace PacmanWindowForms.Script.Models
         }
         protected override void MainTask()
         {
-            handler = new Task(() =>
-            {
                 while (gameState != GameState.GameOver)
                 {
                     try
@@ -96,8 +94,6 @@ namespace PacmanWindowForms.Script.Models
                     }
                     catch (Exception ex) { MessageBox.Show(ex.Message); }
                 }
-            });
-            handler.Start();
         }
 
         protected override void Wait()

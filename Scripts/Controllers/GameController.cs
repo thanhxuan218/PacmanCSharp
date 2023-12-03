@@ -65,7 +65,7 @@ namespace PacmanWindowForms.Script.Controllers
         private int score = 0;
         private bool _bonus = false;
         private int Level = 1;
-        private int lives = 3;
+        private int lives = 4;
 
         public bool Bonus
         {
@@ -100,6 +100,7 @@ namespace PacmanWindowForms.Script.Controllers
         public GameController(frmGameBoard frm, Panel p)
         {
             parentForm = frm;
+            MapLoader.Instance.LoadBoard();
             board = new PacmanBoard(p);
             Pacman = new PacmanCharacter(board);
             Ghosts[GhostColor.Red] = new Ghost(board, GhostColor.Red);
@@ -115,8 +116,6 @@ namespace PacmanWindowForms.Script.Controllers
 
         private void Initialize()
         {
-            MapLoader.Instance.LoadBoard();
-
             wallList = MapLoader.Instance.WallList();
             dotList = MapLoader.Instance.DotList();
             boxList = MapLoader.Instance.BoxList();
@@ -170,6 +169,7 @@ namespace PacmanWindowForms.Script.Controllers
                     AddLives();
                     staticEntity.BonusClear();
                     CheckForWin();
+                    CheckForLose();
                     CheckCollision(this.Pacman);
                     parentForm.Show(score.ToString(), Level.ToString(), lives);
                     Runner.Wait(5);
@@ -238,8 +238,17 @@ namespace PacmanWindowForms.Script.Controllers
             ghostStateTimers[GhostColor.Yellow].AutoReset = true;
         }
 
+        private Dictionary<GhostColor, int> ghostStateCounter = new Dictionary<GhostColor, int>()
+        {
+            { GhostColor.Blue, 0 },
+            { GhostColor.Pink, 0 },
+            { GhostColor.Red, 0 },
+            { GhostColor.Yellow, 0 }
+        };
+
         private void GhostStateTimerElapsed(object sender, ElapsedEventArgs e)
         {
+
             // Check which ghost caused the event
             foreach (GhostColor color in ghostStateTimers.Keys)
             {
@@ -248,13 +257,26 @@ namespace PacmanWindowForms.Script.Controllers
                     // Check if the ghost is in bonus state
                     if (Ghosts[color].GhostState == GhostState.Bonus)
                     {
+                        ghostStateCounter[color] += 1;
                         // Change the ghost state to normal
-                        SetGhostState(color, GhostState.Normal);
+                        if (ghostStateCounter[color] == 80)
+                        {
+                            SetGhostState(color, GhostState.BonusEnd);
+                        }
+                        else if (ghostStateCounter[color] == 100)
+                        {
+                            SetGhostState(color, GhostState.Normal);
+                            ghostStateCounter[color] = 0;
+                        }
                     }
-                    else if (Ghosts[color].GhostState == GhostState.BonusEnd)
+                    else if (Ghosts[color].GhostState == GhostState.Eaten)
                     {
-                        // Change the ghost state to bonus
-                        SetGhostState(color, GhostState.Bonus);
+                        ghostStateCounter[color] += 1;
+                        if (ghostStateCounter[color] == 90)
+                        {
+                            SetGhostState(color, GhostState.Normal);
+                            ghostStateCounter[color] = 0;
+                        }
                     }
                 }
             }
@@ -329,7 +351,6 @@ namespace PacmanWindowForms.Script.Controllers
         }
         private void EatDots(Point[] core)
         {
-
             for (int i = 0; i <= dotList.Count - 1; i++)
             {
                 foreach (Point corePoint in core)
@@ -393,6 +414,7 @@ namespace PacmanWindowForms.Script.Controllers
                 if (lives == 0)
                 {
                     State = GameState.GameOver;
+                    MessageBox.Show("Game Over");
                 }
             }
         }

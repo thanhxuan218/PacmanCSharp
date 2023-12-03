@@ -19,6 +19,7 @@ namespace PacmanWindowForms.Forms
 
         private void frmGameBoard_Load(object sender, EventArgs e)
         {
+            PlaySound(Properties.Resources.Pacman_Opening_Song);
             gameController = new GameController(this, pnlGameBoard);
             pnlGameBoard.Paint += new PaintEventHandler(pnlGameBoard_Paint);
             gameController.State = GameState.GamePaused;

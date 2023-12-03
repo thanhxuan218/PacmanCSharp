@@ -153,6 +153,7 @@ namespace PacmanWindowForms.Script.Models
 
         public void Draw()
         {
+            // call to GameBoardView(Displayer)
             DrawDots();
             DrawBonus();
             DrawWalls();

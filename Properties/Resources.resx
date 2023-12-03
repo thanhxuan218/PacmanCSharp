@@ -325,4 +325,7 @@
   <data name="Pacman_Opening_Song" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resource\sounds\Pacman_Opening_Song.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Pacman_Opening_Song1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\sounds\Pacman_Opening_Song.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
