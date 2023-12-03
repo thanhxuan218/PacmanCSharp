@@ -31,7 +31,8 @@ namespace PacmanWindowForms
 
         private void frmGameBoard_Closed(object sender, FormClosedEventArgs e, string text)
         {
-            this.Show();
+            MessageBox.Show("Exit game!!!");
+            Application.Exit();
         }
 
         private void btnExit_Click(object sender, EventArgs e)

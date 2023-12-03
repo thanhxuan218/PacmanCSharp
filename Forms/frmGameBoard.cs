@@ -33,6 +33,7 @@ namespace PacmanWindowForms.Forms
         // On close form
         private void frmGameBoard_FormClosed(object sender, FormClosedEventArgs e)
         {
+            this.Hide();
             frmGameBoardClosed(sender, e, "Game board closed");
         }
 
@@ -82,7 +83,14 @@ namespace PacmanWindowForms.Forms
                 return;
             }
             SoundPlayer player = new SoundPlayer(s);
-            //player.Play();
+            try
+            {
+                player.Play();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"PlaySound exception with error {e.Message}");
+            }
         }
 
         public void Show(string score, string level, int lives)
@@ -91,7 +99,7 @@ namespace PacmanWindowForms.Forms
             {
                 Invoke(new Action<string, string, int>(Show), new object[] { score, level, lives });
                 return;
-            }    
+            }
             this.lblScore.Text = score;
             this.lblLevel.Text = level;
             if (lives == 4)
@@ -101,12 +109,12 @@ namespace PacmanWindowForms.Forms
                 this.pnlLife3.Visible = true;
                 this.pnlLife4.Visible = true;
             }
-            else if (lives == 3) 
+            else if (lives == 3)
             {
                 this.pnlLife1.Visible = true;
                 this.pnlLife2.Visible = true;
                 this.pnlLife3.Visible = true;
-                this.pnlLife4.Visible = false ;
+                this.pnlLife4.Visible = false;
             }
             else if (lives == 2)
             {
@@ -136,7 +144,7 @@ namespace PacmanWindowForms.Forms
         {
             //MessageBox.Show("frmGameBoard_Shown is called");
             if (gameController == null) return;
-                gameController.Run();
+            gameController.Run();
         }
     }
 }
