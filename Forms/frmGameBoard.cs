@@ -1,13 +1,17 @@
-﻿using PacmanWindowForms.Scripts.Models;
-using PacmanWindowForms;
-using PacmanWindowForms.Scripts;
-using PacmanWindowForms.Scripts.Controllers;
-using PacmanWindowForms.Scripts.Views;
+﻿using PacmanWindowForms;
+using PacmanWindowForms.Script.Controllers;
+using System.Diagnostics;
 using System.Drawing;
+using System.Media;
 namespace PacmanWindowForms.Forms
 {
     public partial class frmGameBoard : Form
     {
+        public delegate void FrmGameBoardClosedHandler(object sender, FormClosedEventArgs e, string text);
+        public event FrmGameBoardClosedHandler frmGameBoardClosed;
+
+        GameController gameController;
+
         public frmGameBoard()
         {
             InitializeComponent();
@@ -15,12 +19,9 @@ namespace PacmanWindowForms.Forms
 
         private void frmGameBoard_Load(object sender, EventArgs e)
         {
-
-            Logger.Log("Game board loaded");
+            gameController = new GameController(this, pnlGameBoard);
             pnlGameBoard.Paint += new PaintEventHandler(pnlGameBoard_Paint);
-
-            Displayer.Instance.onUpdateBoardSize(ref pnlGameBoard, pnlGameBoard.Width, pnlGameBoard.Height);
-
+            gameController.State = GameState.GamePaused;
         }
 
         // Game board panel
@@ -32,51 +33,110 @@ namespace PacmanWindowForms.Forms
         // On close form
         private void frmGameBoard_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Application.Exit();
+            frmGameBoardClosed(sender, e, "Game board closed");
         }
 
         private void pnlGameBoard_Paint(object sender, PaintEventArgs e)
         {
-            Logger.Log("onPaint");
-            var g = e.Graphics;
-            var p = sender as Panel;
-            if (GameController.Instance.IsOnChane())
-            {
-                GameController.Instance.DrawBoard();
-            }
+            gameController.RePaint();
         }
-
-        private Direction GetDirectionByKey(Keys keys)
-        {
-            switch (keys)
-            {
-                case Keys.Left:
-                    return Direction.Left;
-                case Keys.Right:
-                    return Direction.Right;
-                case Keys.Up:
-                    return Direction.Up;
-                case Keys.Down:
-                    return Direction.Down;
-                default:
-                return Direction.None;
-            }
-        }
-
         private void frmPacmanGame_KeyDown(object sender, KeyEventArgs e)
         {
-            Logger.Log("onKeyDown Press with key" + e.KeyCode);
+            if (gameController == null)
+                return;
+            Debug.WriteLine($"Board receive: {e.KeyCode}");
             switch (e.KeyCode)
             {
                 case Keys.Up:
+                    gameController.SetDirection(Direction.Up);
+                    break;
                 case Keys.Down:
+                    gameController.SetDirection(Direction.Down);
+                    break;
                 case Keys.Left:
+                    gameController.SetDirection(Direction.Left);
+                    break;
                 case Keys.Right:
-                    ((DynamicEntity)EntityFactory.Instance.GetEntity(EntityType.Pacman, "")).SetDirection(GetDirectionByKey(e.KeyCode));
+                    gameController.SetDirection(Direction.Right);
+                    break;
+                case Keys.Space:
+                    if (gameController.State == GameState.GamePaused)
+                    {
+                        gameController.Resume();
+                    }
+                    else if (gameController.State == GameState.GameOn)
+                    {
+                        gameController.Pause();
+                    }
                     break;
                 default:
                     break;
             }
+        }
+
+        public void PlaySound(Stream s)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<Stream>(PlaySound), new object[] { s });
+                return;
+            }
+            SoundPlayer player = new SoundPlayer(s);
+            //player.Play();
+        }
+
+        public void Show(string score, string level, int lives)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<string, string, int>(Show), new object[] { score, level, lives });
+                return;
+            }    
+            this.lblScore.Text = score;
+            this.lblLevel.Text = level;
+            if (lives == 4)
+            {
+                this.pnlLife1.Visible = true;
+                this.pnlLife2.Visible = true;
+                this.pnlLife3.Visible = true;
+                this.pnlLife4.Visible = true;
+            }
+            else if (lives == 3) 
+            {
+                this.pnlLife1.Visible = true;
+                this.pnlLife2.Visible = true;
+                this.pnlLife3.Visible = true;
+                this.pnlLife4.Visible = false ;
+            }
+            else if (lives == 2)
+            {
+                this.pnlLife1.Visible = true;
+                this.pnlLife2.Visible = true;
+                this.pnlLife3.Visible = false;
+                this.pnlLife4.Visible = false;
+            }
+            else if (lives == 1)
+            {
+                this.pnlLife1.Visible = true;
+                this.pnlLife2.Visible = false;
+                this.pnlLife3.Visible = false;
+                this.pnlLife4.Visible = false;
+            }
+            else
+            {
+                this.pnlLife1.Visible = false;
+                this.pnlLife2.Visible = false;
+                this.pnlLife3.Visible = false;
+                this.pnlLife4.Visible = false;
+            }
+        }
+
+
+        private void frmGameBoard_Shown(object sender, EventArgs e)
+        {
+            MessageBox.Show("frmGameBoard_Shown is called");
+            if (gameController == null) return;
+                gameController.Run();
         }
     }
 }
