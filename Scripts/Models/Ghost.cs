@@ -1,7 +1,5 @@
-using PacmanWindowForms;
-using PacmanWindowsForm;
-using PacmanWindowsForm.Script.Models;
-using PacmanWinForms;
+using PacmanWindowForms.Script.Views;
+using PacmanWindowForms.Script.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,8 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
-namespace PacmanWindowForms
+namespace PacmanWindowForms.Script.Models
 {
     public class Ghost : CharacterBase
     {
@@ -41,14 +38,16 @@ namespace PacmanWindowForms
             }
         }
         private bool isSprite = true;
-        public Ghost(GhostColor color)
+        public Ghost(PacmanBoard board, GhostColor color)
         {
+            this.board = board;
             this.ghostColor = color;
         }
         private GhostState ghostState = GhostState.Normal;
         private List<Point> wallList = null;
         private List<Point> boxDoorList = null;
         private List<Point> boxList = null;
+        private readonly PacmanBoard board;
 
         public GhostState GhostState
         {
@@ -64,18 +63,15 @@ namespace PacmanWindowForms
 
         public override void Initialize()
         {
-            boxDoorList = GameBoard.Instance.BoxDoorList();
-            wallList = GameBoard.Instance.WallList();
-            boxList = GameBoard.Instance.BoxList();
+            boxDoorList = MapLoader.Instance.BoxDoorList();
+            wallList = MapLoader.Instance.WallList();
+            boxList = MapLoader.Instance.BoxList();
             wallList.OrderBy(p => p.X).ThenBy(p => p.Y);
             ghostState = GhostState.Normal;
             point = initialPoints[ghostColor];
             currentDirection = initialDirections[ghostColor];
             this.body = DetermineBody(point);
             this.core = DetermineCore(point);
-
-            // TODO: Load from Controller
-            gameState = GameState.GameOver;
         }
 
         public override void Reset()
@@ -122,7 +118,7 @@ namespace PacmanWindowForms
             core[3] = new Point(p.X + 3, p.Y + 2);
             return core;
         }
-        private override void MainTask()
+        protected override void MainTask()
         {
             while (gameState != GameState.GameOver)
             {
@@ -132,6 +128,7 @@ namespace PacmanWindowForms
                     this.Draw();
                     isSprite = !isSprite;
                     Wait();
+                    //Debug.WriteLine($"{Color} - gameState {gameState}");
                 }
                 catch (Exception ex)
                 {
@@ -140,11 +137,11 @@ namespace PacmanWindowForms
             }
         }
 
-        private override void Wait()
+        protected override void Wait()
         {
             if (ghostState == GhostState.Normal)
             {
-                handler.Wait(speed + 5);
+                handler.Wait(speed);
             }
             else if (ghostState == GhostState.Bonus || ghostState == GhostState.BonusEnd)
             {
@@ -157,31 +154,40 @@ namespace PacmanWindowForms
             }
         }
 
-        private override void Move(Point p, Direction dir)
+        protected override Point Move(Point startPoint, Direction dir)
         {
-            Random rnd = new Random();
-
-            List<Direction> nextPossibleDir = PossibleDirections(startPoint, d);
-
-            if (nextPossibleDir.Count != 0)
+            if (gameState == GameState.GameOn)
             {
-                int i = rnd.Next(0, nextPossibleDir.Count);
-                d = nextPossibleDir[i];
-            }
+                if (!IsCollision(NextPoint(startPoint, dir), startPoint))
+                {
+                    return NextPoint(startPoint, dir);
+                }
 
-            this.point = NextPoint(startPoint, d);
-            this.currentDirection = d;
-            return this.point;
+                Random rnd = new Random();
+
+                List<Direction> nextPossibleDir = PossibleDirections(startPoint, dir);
+
+                if (nextPossibleDir.Count != 0)
+                {
+                    int i = rnd.Next(0, nextPossibleDir.Count);
+                    dir = nextPossibleDir[i];
+                }
+
+                this.point = NextPoint(startPoint, dir);
+                this.currentDirection = dir;
+                return this.point;
+            }
+            return startPoint;
         }
 
-        private override List<Direction> PossibleDirections(Point p, Direction d)
+        private List<Direction> PossibleDirections(Point p, Direction currDir)
         {
             List<Direction> nextPossibleDir = new List<Direction>();
             for (Direction dir = Direction.Up; dir <= Direction.Right; dir++)
             {
-                if (!IsCollision(NextPoint(p, d), p) && d != curDir && Math.Abs(d - curDir) != 2)
+                if (!IsCollision(NextPoint(p, dir), p) && dir != currDir && Math.Abs(dir - currDir) != 2)
                 {
-                    nextPossibleDir.Add(d);
+                    nextPossibleDir.Add(dir);
                 }
             }
             return nextPossibleDir;
@@ -189,12 +195,12 @@ namespace PacmanWindowForms
 
         private bool IsOutOfBox(Point p)
         {
+            //MessageBox.Show($"IsOutOfBox is called by {Color.ToString()}");
             List<Point> commonPoints = DetermineBody(p).Intersect(boxList.Select(u => u)).ToList();
+            //Debug.WriteLine($"IsOutOfBox is called by {Color.ToString()} - is {commonPoints.Count}");
             return commonPoints.Count == 0;
         }
-
-
-        private bool IsCollision(Point curr, Point prev)
+        protected override bool IsCollision(Point curr, Point prev)
         {
             List<Point> mergedList = new List<Point>();
             if (IsOutOfBox(prev))
@@ -210,7 +216,7 @@ namespace PacmanWindowForms
             return (commonPoints.Count != 0);
         }
 
-        private Point NextPoint(Point p, Direction d)
+        protected override Point NextPoint(Point p, Direction d)
         {
             Point nextP = new Point();
             nextP = p;

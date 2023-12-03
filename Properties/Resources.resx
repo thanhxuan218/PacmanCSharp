@@ -289,4 +289,40 @@
   <data name="YellowGhostUp2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resource\Img\YellowGhostUp2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="board" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\Maps\board.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="board_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\Maps\board_2.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="GhostScare1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\Img\GhostScare1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GhostScare2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\Img\GhostScare2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GhostScareEnd1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\Img\GhostScareEnd1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GhostsScareEnd2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\Img\GhostsScareEnd2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="map" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\Maps\map.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Pacman_Dies" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\sounds\Pacman Dies.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Pacman_Eating_Ghost" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\sounds\Pacman_Eating_Ghost.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Pacman_Extra_Live" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\sounds\Pacman_Extra_Live.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Pacman_Intermission" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\sounds\Pacman_Intermission.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Pacman_Opening_Song" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resource\sounds\Pacman_Opening_Song.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

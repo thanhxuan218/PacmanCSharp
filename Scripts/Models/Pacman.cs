@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using PacmanWindowForms.Script.Models;
+using PacmanWindowForms.Script.Views;
 
-namespace PacmanWindowForms
+namespace PacmanWindowForms.Script.Models
 {
-    public class Pacman : CharacterBase
+    public class PacmanCharacter : CharacterBase
     {
-        private Direction nextDirection = Direction.Stop;
+        private Direction nextDirection = Direction.None;
         private List<Point> wallList = null;
         private List<Point> boxDoorList = null;
         // TODO: Hanle GameBoard
@@ -24,32 +25,31 @@ namespace PacmanWindowForms
             return point;
         }
 
-        public PacmanCharacter(frmPacmanGame frm, PacmanBoard b)
+        public PacmanCharacter(PacmanBoard b)
         {
-            this.gameForm = frm;
             this.board = b;
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
-            boxDoorList = GameBoard.Instance.BoxDoorList();
-            wallList = GameBoard.Instance.WallList();
+            boxDoorList = MapLoader.Instance.BoxDoorList();
+            wallList = MapLoader.Instance.WallList();
             wallList.OrderBy(p => p.X).ThenBy(p => p.Y);
             point = new Point(26, 39);
-            currentDirection = Direction.Stop;
-            nextDirection = Direction.Stop;
+            currentDirection = Direction.None;
+            nextDirection = Direction.None;
             body = DetermineBody(point);
             core = DetermineCore(point);
-            gameState = GameState.GameOver;
+            gameState = GameState.GamePaused;
         }
 
-        public void Stop()
+        public override void Stop()
         {
             gameState = GameState.GameOver;
         }
 
 
-        public Point[] DetermineBody(Point p)
+        public override Point[] DetermineBody(Point p)
         {
             Point[] body = new Point[12];
             body[0] = p;
@@ -70,7 +70,7 @@ namespace PacmanWindowForms
             return body;
         }
 
-        public Point[] DetermineCore(Point p)
+        public override Point[] DetermineCore(Point p)
         {
             Point[] core = new Point[4];
             core[0] = new Point(p.X + 2, p.Y + 2);
@@ -79,9 +79,8 @@ namespace PacmanWindowForms
             core[3] = new Point(p.X + 3, p.Y + 2);
             return core;
         }
-        public void Run()
+        protected override void MainTask()
         {
-            gameState = GameState.GameRun;
             handler = new Task(() =>
             {
                 while (gameState != GameState.GameOver)
@@ -89,9 +88,11 @@ namespace PacmanWindowForms
                     try
                     {
                         RemovePacman(this.point);
-                        this.point = Move(this.point);
+                        this.point = Move(this.point, currentDirection);
+                        Debug.WriteLine($"Pacman move to {this.point.ToString()}");
                         Draw();
-                        handler.Wait(speed);
+                        Wait();
+
                     }
                     catch (Exception ex) { MessageBox.Show(ex.Message); }
                 }
@@ -99,69 +100,83 @@ namespace PacmanWindowForms
             handler.Start();
         }
 
+        protected override void Wait()
+        {
+            handler.Wait(speed);
+        }
+
         public void RemovePacman(Point point)
         {
             board.ClearPacMan(point);
         }
-
+        bool isMoving = false;
         public override void Draw()
         {
             board.DrawPacMan(point, Color.Yellow, currentDirection);
         }
-        private Point Move(Point startPoint)
+        protected override Point Move(Point startPoint, Direction direction)
         {
-            if (gameState != GameState.GameRun)
+            if (gameState != GameState.GameOn)
             {
+                Debug.WriteLine($"Pacman Keep current Point");
                 return startPoint;
             }
             Point next;
+            bool passed = false;
 
             for (Direction d = Direction.Up; d <= Direction.Right; d++)
             {
                 next = NextPoint(startPoint, d);
-                if (!IsCollision(next, startPoint))
+                bool isColliding = !IsCollision(next, startPoint);
+                if (isColliding && direction == nextDirection && nextDirection != Direction.None)
                 {
-                    if (d == nextDirection)
-                    {
-                        currentDirection = nextDirection;
-                        nextDirection = Direction.Stop;
-                        return nextP;
-                    }
-                    else if (d == currentDirection)
-                    {
-                        return nextP;
-                    }
+                    currentDirection = nextDirection;
+                    nextDirection = Direction.None;
+                    return next;
+                }
+                else if (isColliding && direction == d)
+                {
+                    passed = true;
                 }
             }
+            
+            if (passed)
+            {
+                return NextPoint(startPoint, direction);
+            }
+
+            nextDirection = Direction.None;
             return startPoint;
         }
         public void SetDirection(Direction d)
         {
-            if (!IsCollision(this.point, NextPoint(point, d)))
+            if (!IsCollision(NextPoint(point, d), this.point))
             {
                 currentDirection = d;
-                nextDirection = Direction.Stop;
+                nextDirection = Direction.None;
             }
             else
             {
-                nextDirection = d;
+                    nextDirection = d;
             }
+
         }
 
-        public void Reset()
+        public override void Reset()
         {
             point = new Point(26, 39);
         }
 
-        private override bool IsCollision(Point curr, Point prev)
+        protected override bool IsCollision(Point curr, Point prev)
         {
             List<Point> mergedList = new List<Point>();
             mergedList = boxDoorList.Union(wallList).ToList();
             List<Point> commonPoints = DetermineBody(curr).Intersect(mergedList.Select(u => u)).ToList();
-            return commonPoints.Count == 0;
+
+            return commonPoints.Count != 0;
         }
 
-        private override Point NextPoint(Point p, Direction dir)
+        protected override Point NextPoint(Point p, Direction dir)
         {
             Point next = p;
             switch (dir)
@@ -178,7 +193,7 @@ namespace PacmanWindowForms
                 case Direction.Left:
                     next.X--;
                     break;
-                case Direction.Stop:
+                case Direction.None:
 
                     break;
             }

@@ -181,6 +181,55 @@ namespace PacmanWindowForms.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 22222222222222222222222222222222222222222222222222222222
+        ///25555555555555555555555555522555555555555555555555555552
+        ///25555555555555555555555555522555555555555555555555555552
+        ///25505050505050505050505050522550505050505050505050505052
+        ///25555555555555555555555555522555555555555555555555555552
+        ///25505222222550522222222550555550522222222550522222255052
+        ///25555255552555525555552555555555525555552555525555255552
+        ///25505255552550525555552550505050525555552550525555255052
+        ///255552222225555222222225555555555222222225555222 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string board {
+            get {
+                return ResourceManager.GetString("board", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 00000000000000000000000000000000000000000000000000000000
+        ///0000
+        ///0000
+        ///0222222222222002222222222220
+        ///0000
+        ///020000002000000002200000000200000020
+        ///0000000000
+        ///020020022220020020
+        ///000000000000000000000000000000
+        ///0222002220
+        ///0000
+        ///0222222222222002222222222220
+        ///0000
+        ///02000000200200000000000000200200000020
+        ///00000000000000000000000000000000
+        ///02200200200220
+        ///00000000
+        ///0222222002222002222002222220
+        ///00000000
+        ///00000200200000000200200000000200200000
+        ///00000000000000000000000000000000
+        ///020022220020
+        ///000000
+        ///02220022222222 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string board_2 {
+            get {
+                return ResourceManager.GetString("board_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to P 26 39 1 1 30 30 0
         ///G 30 28 3 3 1000 9999 0 0
         ///G 26 28 3 3 1000 9999 1 1
@@ -236,9 +285,39 @@ namespace PacmanWindowForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap GhostScare {
+        internal static System.Drawing.Bitmap GhostScare1 {
             get {
-                object obj = ResourceManager.GetObject("GhostScare", resourceCulture);
+                object obj = ResourceManager.GetObject("GhostScare1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GhostScare2 {
+            get {
+                object obj = ResourceManager.GetObject("GhostScare2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GhostScareEnd1 {
+            get {
+                object obj = ResourceManager.GetObject("GhostScareEnd1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GhostsScareEnd2 {
+            get {
+                object obj = ResourceManager.GetObject("GhostsScareEnd2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -304,6 +383,23 @@ namespace PacmanWindowForms.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        ///x                          xx                          x
+        ///x                          xx                          x
+        ///x  o o o o o o o o o o o o xx  o o o o o o o o o o o o x
+        ///x                          xx                          x
+        ///x  o xxxxxx  o xxxxxxxx  o     o xxxxxxxx  o xxxxxx  o x
+        ///x    x    x    x      x          x      x    x    x    x
+        ///x  o x    x  o x      x  o o o o x      x  o x    x  o x
+        ///x    xxxxxx    xxxxxxxx          xxxxxxxx    xxx [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string map {
+            get {
+                return ResourceManager.GetString("map", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 00000000000000000000000000000000000000000000000000000000
         ///01111111111111111111111111100111111111111111111111111110
         ///01111111111111111111111111100111111111111111111111111110
@@ -341,20 +437,12 @@ namespace PacmanWindowForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.IO.UnmanagedMemoryStream Pacman_Dies {
+        internal static byte[] Pacman_Dies {
             get {
-                return ResourceManager.GetStream("Pacman_Dies", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream Pacman_Eating_Cherry {
-            get {
-                return ResourceManager.GetStream("Pacman_Eating_Cherry", resourceCulture);
+                object obj = ResourceManager.GetObject("Pacman_Dies", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -391,33 +479,6 @@ namespace PacmanWindowForms.Properties {
         internal static System.IO.UnmanagedMemoryStream Pacman_Opening_Song {
             get {
                 return ResourceManager.GetStream("Pacman_Opening_Song", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream Pacman_Siren {
-            get {
-                return ResourceManager.GetStream("Pacman_Siren", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream Pacman_Waka_Waka {
-            get {
-                return ResourceManager.GetStream("Pacman_Waka_Waka", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream Pacman_Waka_Waka_Cut {
-            get {
-                return ResourceManager.GetStream("Pacman_Waka_Waka_Cut", resourceCulture);
             }
         }
         

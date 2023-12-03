@@ -6,7 +6,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Media;
 using System.IO;
-using PacmanWindowsForm.Script.Models;
+using PacmanWindowForms.Script.Models;
+using PacmanWindowForms.Script.Views;
+using System.Runtime.CompilerServices;
 
 namespace PacmanWindowForms.Script.Models
 {
@@ -16,23 +18,24 @@ namespace PacmanWindowForms.Script.Models
         private List<Point> bonusList = null;
         private List<Point> wallList = null;
         private List<Point> boxList = null;
+        private List<Point> boxDoorList = null;
         private readonly PacmanBoard board;
         private Task handler;
-        StaticEntity(PacmanBoard b)
+        public StaticEntity(PacmanBoard b)
         {
             this.board = b;
         }
 
         public void Initialize()
         {
-            dotList = GameBoard.Instance.DotList();
-            bonusList = GameBoard.Instance.BonusList();
-            wallList = GameBoard.Instance.WallList();
-            boxList = GameBoard.Instance.BoxList();
+            dotList = MapLoader.Instance.DotList();
+            bonusList = MapLoader.Instance.BonusList();
+            wallList = MapLoader.Instance.WallList();
+            boxList = MapLoader.Instance.BoxList();
+            boxDoorList = MapLoader.Instance.BoxDoorList();
         }
 
         private int bonusStateCounter = 0;
-        private int bonusState = 0;
 
         public void StaticEntityStart()
         {
@@ -42,40 +45,51 @@ namespace PacmanWindowForms.Script.Models
                 {
                     try
                     {
-                        DoorPaint();
-                        WallPaint();
-                        Thread.Sleep(100);
+                        //MessageBox.Show("StaticEntityStart() is called");
+                        Draw();
+                        handler.Wait(100);
+                        bonusStateCounter++;
+                        if (bonusStateCounter == 4)
+                        {
+                            bonusStateCounter = 0;
+                        }
                     }
-                    catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+                    catch (Exception ex) 
+                    { MessageBox.Show("StaticEntityStart" + ex.ToString()); }
                 }
             });
-            handler.Start();
         }
+
+       
 
         public void DrawDots()
         {
-            foreach (Point p in dotList)
+            lock(dotList)
             {
-                board.DrawDot(p);
+                foreach (Point p in dotList)
+                {
+                    board.DrawDot(p, Color.White);
+                }
             }
         }
 
         public void DrawBonus()
         {
-            lock (this.bonusState)
+            lock (this)
             {
                 foreach (Point p in bonusList)
                 {
-                    board.DrawBonus(p, Color.White, this.bonusState);
+                    board.DrawBonus(p, Color.White, this.bonusStateCounter);
                 }
             }
         }
 
+        private bool isDrawWalls = false;
         public void DrawWalls()
         {
             foreach (Point p in wallList)
             {
-                board.DrawWall(p, Color.RoyalBlue);
+                board.DrawRect(p, Color.RoyalBlue);
             }
         }
 
@@ -83,7 +97,6 @@ namespace PacmanWindowForms.Script.Models
         {
             foreach (Point p in boxList)
             {
-                board.DrawBox(p);
             }
         }
 

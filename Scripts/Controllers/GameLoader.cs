@@ -7,24 +7,23 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms.PropertyGridInternal;
 using System.Reflection;
-using PacmanWinForms;
 using System.Windows.Forms;
 
-namespace PacmanWindowsForm.Script.Models
+namespace PacmanWindowForms.Script.Models
 {
-    public class GameBoard
+    public class MapLoader
     {
-        private GameBoard() { }
+        private MapLoader() { }
 
-        private static GameBoard _instance;
+        private static MapLoader _instance;
 
-        public static GameBoard Instance
+        public static MapLoader Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new GameBoard();
+                    _instance = new MapLoader();
                 }
 
                 return _instance;
@@ -37,7 +36,12 @@ namespace PacmanWindowsForm.Script.Models
         private List<Point> boxDoorList = new List<Point>();
         private bool isLoaded = false;
         private static string mapBuffer = new string(new char[0]);
-        private const string MapFilePath = @"D:\00.Temp\Pacman_Ref\PacmanWinForms\Resources\map.txt";
+        private Dictionary<int, string> maps = new Dictionary<int, string>()
+        {
+            { 1, Properties.Resources.map },
+
+        };
+
         private const char LoadTypeAll = 'a';
         private const char LoadTypeDots = 'o';
         private const char LoadTypeWalls = 'x';
@@ -70,11 +74,22 @@ namespace PacmanWindowsForm.Script.Models
             }
         }
 
+        private bool isLoading = false;
         public void LoadBoard(int level = 1, char loadType = LoadTypeAll)
         {
+
+            if (isLoaded == true)
+            {
+                return;
+            }
+
+            isLoading = true;
+
+
+
             if (mapBuffer.Length == 0)
             {
-                mapBuffer = File.ReadAllText(MapFilePath);
+                mapBuffer = maps[level];
             }
 
             bool isUpdate = (loadType == LoadTypeAll);
@@ -126,54 +141,79 @@ namespace PacmanWindowsForm.Script.Models
             this.boardWidth = mapBuffer.Split('\n')[0].Length;
             this.boardHeight = mapBuffer.Split('\n').Length;
 
+            MessageBox.Show($"Load map with size {this.boardWidth}x{this.BoardHeight}");
+
             isLoaded = true;
+            isLoading = false;
+
         }
 
-        public ref List<Point> DotList()
+        public List<Point> DotList()
         {
+            while(isLoading == true)
+            {
+
+            }
+
             if (!isLoaded)
             {
                 LoadBoard(loadType: LoadTypeDots);
             }
-            return ref dotList;
+            return  dotList;
         }
 
-        public ref List<Point> BonusList()
+        public  List<Point> BonusList()
         {
+            while (isLoading == true)
+            {
+
+            }
             if (!isLoaded)
             {
                 LoadBoard(loadType: LoadTypeBonus);
             }
-            return ref bonusList;
+            return  bonusList;
         }
 
-        public ref List<Point> WallList()
+        public  List<Point> WallList()
         {
+            while (isLoading == true)
+            {
+
+            }
             if (!isLoaded)
             {
                 LoadBoard(loadType: LoadTypeWalls);
             }
-            return ref wallList;
+            return  wallList;
         }
 
-        public ref List<Point> BoxList()
+        public  List<Point> BoxList()
         {
+            while (isLoading == true)
+            {
+
+            }
             if (!isLoaded)
             {
                 LoadBoard(loadType: LoadTypeBoxes);
             }
-            return ref boxList;
+            return  boxList;
         }
 
-        public ref List<Point> BoxDoorList()
+        public  List<Point> BoxDoorList()
         {
+            while (isLoading == true)
+            {
+
+            }
             if (!isLoaded)
             {
                 LoadBoard(loadType: LoadTypeDoors);
 
                 MessageBox.Show("BoxDoorList" + boxDoorList.Count);
             }
-            return ref boxDoorList;
+            return  boxDoorList;
         }
 
         public void Reset()

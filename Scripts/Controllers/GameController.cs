@@ -6,11 +6,16 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Media;
 using System.IO;
-using PacmanWindowsForm.Script.Models;
+using System.Timers;
+using PacmanWindowForms.Script.Models;
+using PacmanWindowForms.Forms;
+using PacmanWindowForms.Script.Views;
+using static System.Windows.Forms.AxHost;
+using System.Diagnostics;
 
 namespace PacmanWindowForms.Script.Controllers
 {
-    public class PacmanGame
+    public class GameController
     {
         public int PacmanSpeed
         {
@@ -22,42 +27,19 @@ namespace PacmanWindowForms.Script.Controllers
                 Pacman.speed = _delay;
             }
         }
-
-        public int RedGhostSpeed
-        {
-            get { return RedGhost.speed; }
-            set { RedGhost.speed = value; }
-        }
-
-        public int BlueGhostSpeed
-        {
-            get { return BlueGhost.speed; }
-            set { BlueGhost.speed = value; }
-        }
-
-        public int PinkGhostSpeed
-        {
-            get { return PinkGhost.speed; }
-            set { PinkGhost.speed = value; }
-        }
-
-        public int YellowGhostSpeed
-        {
-            get { return YellowGhost.speed; }
-            set { YellowGhost.speed = value; }
-        }
-
         public int GhostSpeed
         {
             get { return _ghostSpeed; }
             set
             {
                 _ghostSpeed = (value < 10) ? 10 : value;
-                RedGhost.speed = _ghostSpeed;
-                BlueGhost.speed = _ghostSpeed;
-                PinkGhost.speed = _ghostSpeed;
-                YellowGhost.speed = _ghostSpeed;
+                Ghosts[GhostColor.Red].speed = _ghostSpeed;
+                Ghosts[GhostColor.Blue].speed = _ghostSpeed;
+                Ghosts[GhostColor.Pink].speed = _ghostSpeed;
+                Ghosts[GhostColor.Yellow].speed = _ghostSpeed;
             }
+
+
         }
 
 
@@ -69,10 +51,10 @@ namespace PacmanWindowForms.Script.Controllers
             {
                 _state = value;
                 Pacman.gameState = value;
-                RedGhost.gameState = value;
-                BlueGhost.gameState = value;
-                YellowGhost.gameState = value;
-                PinkGhost.gameState = value;
+                Ghosts[GhostColor.Red].gameState = value;
+                Ghosts[GhostColor.Blue].gameState = value;
+                Ghosts[GhostColor.Pink].gameState = value;
+                Ghosts[GhostColor.Yellow].gameState = value;
             }
         }
 
@@ -98,11 +80,11 @@ namespace PacmanWindowForms.Script.Controllers
             }
         }
 
-        private readonly frmPacmanGame parentForm;
+        private readonly frmGameBoard parentForm;
         private readonly PacmanBoard board;
         private readonly PacmanCharacter Pacman;
         private StaticEntity staticEntity;
-        private Dictionary<GhostColor, GhostCharacter> Ghosts = new Dictionary<GhostColor, GhostCharacter>() {
+        private Dictionary<GhostColor, Ghost> Ghosts = new Dictionary<GhostColor, Ghost>() {
             { GhostColor.Blue, null },
             { GhostColor.Pink, null },
             { GhostColor.Red, null },
@@ -116,16 +98,17 @@ namespace PacmanWindowForms.Script.Controllers
         List<Point> bonusList = new List<Point>();
 
 
-        public PacmanGame(frmPacmanGame frm, Panel p)
+        public GameController(frmGameBoard frm, Panel p)
         {
             parentForm = frm;
             board = new PacmanBoard(p);
-            Pacman = new PacmanCharacter(parentForm, board);
-            Ghosts[GhostColor.Red] = new GhostCharacter(parentForm, board, GhostColor.Red);
-            Ghosts[GhostColor.Blue] = new GhostCharacter(parentForm, board, GhostColor.Blue);
-            Ghosts[GhostColor.Pink] = new GhostCharacter(parentForm, board, GhostColor.Pink);
-            Ghosts[GhostColor.Yellow] = new GhostCharacter(parentForm, board, GhostColor.Yellow);
+            Pacman = new PacmanCharacter(board);
+            Ghosts[GhostColor.Red] = new Ghost(board, GhostColor.Red);
+            Ghosts[GhostColor.Blue] = new Ghost(board, GhostColor.Blue);
+            Ghosts[GhostColor.Pink] = new Ghost(board, GhostColor.Pink);
+            Ghosts[GhostColor.Yellow] = new Ghost(board, GhostColor.Yellow);
             staticEntity = new StaticEntity(board);
+            this.State = GameState.GamePaused;
             this.Initialize();
             RePaint();
         }
@@ -133,45 +116,43 @@ namespace PacmanWindowForms.Script.Controllers
 
         private void Initialize()
         {
-            GameBoard.Instance.LoadBoard();
-            wallList = GameBoard.Instance.WallList();
-            dotList = GameBoard.Instance.DotList();
-            boxList = GameBoard.Instance.BoxList();
-            boxDoorList = GameBoard.Instance.BoxDoorList();
-            bonusList = GameBoard.Instance.BonusList();
+            MapLoader.Instance.LoadBoard();
 
+            wallList = MapLoader.Instance.WallList();
+            dotList = MapLoader.Instance.DotList();
+            boxList = MapLoader.Instance.BoxList();
+            boxDoorList = MapLoader.Instance.BoxDoorList();
+            bonusList = MapLoader.Instance.BonusList();
+
+            staticEntity.Initialize();
             Pacman.Initialize();
             Ghosts[GhostColor.Red].Initialize();
             Ghosts[GhostColor.Blue].Initialize();
             Ghosts[GhostColor.Pink].Initialize();
             Ghosts[GhostColor.Yellow].Initialize();
-            staticEntity.Initialize();
+
+            MessageBox.Show($"wallList {wallList.Count}, dotList {dotList.Count}, boxList {boxList.Count}, boxDoorList {boxDoorList.Count}, bonusList {bonusList.Count}");
+
 
             State = GameState.GameOver;
             score = 0;
             PacmanSpeed = 80;
             GhostSpeed = 80;
-
-            PointLists.PrintMapToFile();
         }
 
 
         public void Run()
         {
             RePaint();
-            State = GameState.GameRun;
             Runner = new Task(runGame);
             Runner.Start();
-            wallRunner = new Task(runWalls);
-            wallRunner.Start();
-            Clock = new Task(RunClock);
-            Clock.Start();
+            staticEntity.StaticEntityStart();
+            MonitorBonusBehavior();
             Pacman.Run();
             Ghosts[GhostColor.Red].Run();
             Ghosts[GhostColor.Blue].Run();
             Ghosts[GhostColor.Pink].Run();
             Ghosts[GhostColor.Yellow].Run();
-            staticEntity.StaticEntityStart();
         }
 
         public void RePaint()
@@ -187,77 +168,52 @@ namespace PacmanWindowForms.Script.Controllers
             {
                 try
                 {
-                    eatDots(Pacman.GetCore());
+                    EatDots(Pacman.GetCore());
                     EatBonus(Pacman.GetCore());
                     AddLives();
-                    BonusClear();
-                    BonusPaint(bonusStateCounter);
-                    DotPaint();
+                    staticEntity.BonusClear();
                     CheckForWin();
                     CheckCollision(this.Pacman);
-                    parentForm.Write(score.ToString(), Level.ToString(), ConvertLives(lives), Pacman.GetPoint().ToString(), PacmanSpeed.ToString(), GhostSpeed.ToString());
-                    Runner.Wait(10);
+                    parentForm.Show(score.ToString(), Level.ToString(), lives);
+                    Runner.Wait(5);
                 }
                 catch (Exception ex) { MessageBox.Show(ex.ToString()); }
             }
-        }
-
-        private string ConvertLives(int l)
-        {
-            string lives = string.Empty;
-            for (int i = 0; i < l; i++) lives += "❤";
-            return lives;
-
         }
 
         private void AddLives()
         {
             if (score % 10000 == 0)
             {
-                parentForm.playSound(Properties.Resources.Pacman_Extra_Live);
+                //parentForm.playSound(Properties.Resources.Pacman_Extra_Live);
                 score += 10;
                 lives++;
             }
         }
-
-        private void runWalls()
-        {
-            while (State != GameState.GameOver)
-            {
-                try
-                {
-                    DoorPaint();
-                    WallPaint();
-                    wallRunner.Wait(100);
-                }
-                catch (Exception ex) { MessageBox.Show(ex.ToString()); }
-            }
-        }
-
-        private void RunClock()
-        {
-            while (State != GameState.GameOver)
-            {
-                try
-                {
-                    ChangeGhostState();
-                    BonusStateChange();
-                    Clock.Wait(100);
-                }
-                catch (Exception ex) { MessageBox.Show(ex.ToString()); }
-            }
-        }
-
         // Use timer instead of this
         private void MonitorBonusBehavior()
         {
+            this.TimerInitialize();
             bonusMonitorTask = new Task(() =>
             {
+                while (State != GameState.GameOver)
+                {
+                    try
+                    {
+                        ChangeGhostState();
+                        BonusStateChange();
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.ToString());
+                    }
+                    bonusMonitorTask.Wait(100);
+                }
             });
             bonusMonitorTask.Start();
         }
 
-        private Dictionary<GhostColor, Timer> ghostStateTimers = new Dictionary<GhostColor, Timer>()
+        private Dictionary<GhostColor, System.Timers.Timer> ghostStateTimers = new Dictionary<GhostColor, System.Timers.Timer>()
         {
             { GhostColor.Blue, null },
             { GhostColor.Pink, null },
@@ -265,22 +221,22 @@ namespace PacmanWindowForms.Script.Controllers
             { GhostColor.Yellow, null }
         };
 
-        private void Initialize()
+        private void TimerInitialize()
         {
             // Initialize the ghost state timers
-            ghostStateTimers[GhostColor.Blue] = new Timer(50);
+            ghostStateTimers[GhostColor.Blue] = new System.Timers.Timer(50);
             ghostStateTimers[GhostColor.Blue].Elapsed += GhostStateTimerElapsed;
             ghostStateTimers[GhostColor.Blue].AutoReset = true;
 
-            ghostStateTimers[GhostColor.Pink] = new Timer(50);
+            ghostStateTimers[GhostColor.Pink] = new System.Timers.Timer(50);
             ghostStateTimers[GhostColor.Pink].Elapsed += GhostStateTimerElapsed;
             ghostStateTimers[GhostColor.Pink].AutoReset = true;
 
-            ghostStateTimers[GhostColor.Red] = new Timer(50);
+            ghostStateTimers[GhostColor.Red] = new System.Timers.Timer(50);
             ghostStateTimers[GhostColor.Red].Elapsed += GhostStateTimerElapsed;
             ghostStateTimers[GhostColor.Red].AutoReset = true;
 
-            ghostStateTimers[GhostColor.Yellow] = new Timer(50);
+            ghostStateTimers[GhostColor.Yellow] = new System.Timers.Timer(50);
             ghostStateTimers[GhostColor.Yellow].Elapsed += GhostStateTimerElapsed;
             ghostStateTimers[GhostColor.Yellow].AutoReset = true;
         }
@@ -293,12 +249,12 @@ namespace PacmanWindowForms.Script.Controllers
                 if (ghostStateTimers[color] == sender)
                 {
                     // Check if the ghost is in bonus state
-                    if (Ghosts[color].ghostState == GhostState.Bonus)
+                    if (Ghosts[color].GhostState == GhostState.Bonus)
                     {
                         // Change the ghost state to normal
                         SetGhostState(color, GhostState.Normal);
                     }
-                    else if (Ghosts[color].ghostState == GhostState.BonusEnd)
+                    else if (Ghosts[color].GhostState == GhostState.BonusEnd)
                     {
                         // Change the ghost state to bonus
                         SetGhostState(color, GhostState.Bonus);
@@ -312,7 +268,7 @@ namespace PacmanWindowForms.Script.Controllers
             // Start the ghost state timer
             foreach (GhostColor color in ghostStateTimers.Keys)
             {
-                if (Ghosts[color].ghostState == GhostState.Eaten && this.State == GameState.GameRun)
+                if (Ghosts[color].GhostState == GhostState.Eaten && this.State == GameState.GameOn)
                 {
                     ghostStateTimers[color].Start();
                 }
@@ -323,18 +279,14 @@ namespace PacmanWindowForms.Script.Controllers
             }
         }
 
-        private void BonusStateChange()
-        {
-
-        }
-
-
-
+        int bonusStateCounter = 0;
+        int bonusCounter = 0;
+        bool BonusEndSprite = true;
         private void BonusStateChange()
         {
             bonusStateCounter = (bonusStateCounter > 4) ? 1 : bonusStateCounter;
             bonusStateCounter++;
-            if (Bonus && bonusCounter < 70 && this.State == GameState.GameRun)
+            if (Bonus && bonusCounter < 70 && this.State == GameState.GameOn)
             {
                 bonusCounter++;
 
@@ -345,7 +297,7 @@ namespace PacmanWindowForms.Script.Controllers
                 {
                     foreach (GhostColor color in ghostStateTimers.Keys)
                     {
-                        if (Ghosts[color].ghostState != GhostState.Eaten)
+                        if (Ghosts[color].GhostState != GhostState.Eaten)
                         {
                             SetGhostState(color, GhostState.BonusEnd);
                         }
@@ -356,7 +308,7 @@ namespace PacmanWindowForms.Script.Controllers
                 {
                     foreach (GhostColor color in ghostStateTimers.Keys)
                     {
-                        if (Ghosts[color].ghostState != GhostState.Eaten)
+                        if (Ghosts[color].GhostState != GhostState.Eaten)
                         {
                             SetGhostState(color, GhostState.Bonus);
                         }
@@ -371,7 +323,7 @@ namespace PacmanWindowForms.Script.Controllers
                 Bonus = false;
                 foreach (GhostColor color in ghostStateTimers.Keys)
                 {
-                    if (Ghosts[color].ghostState != GhostState.Eaten)
+                    if (Ghosts[color].GhostState != GhostState.Eaten)
                     {
                         SetGhostState(color, GhostState.Normal);
                     }
@@ -421,20 +373,23 @@ namespace PacmanWindowForms.Script.Controllers
         private void CheckForLose()
         {
             List<Point> mergedList = new List<Point>();
-            mergedList = RedGhost.GetCore().Union(BlueGhost.GetCore()).Union(PinkGhost.GetCore()).Union(YellowGhost.GetCore()).ToList();
+            foreach (GhostColor color in ghostStateTimers.Keys)
+            {
+                mergedList = mergedList.Union(Ghosts[color].GetCore()).ToList();
+            }
 
             List<Point> commonPoints = Pacman.GetCore().Intersect(mergedList.Select(u => u)).ToList();
 
             if ((commonPoints.Count != 0 && !Bonus) || lives == 0)
             {
-                State = GameState.GamePause;
-                parentForm.playSound(Properties.Resources.Pacman_Dies);
+                State = GameState.GamePaused;
+                parentForm.PlaySound(new MemoryStream(Properties.Resources.Pacman_Dies));
 
                 Thread.Sleep(1000);
-                RedGhost.Reset();
-                BlueGhost.Reset();
-                PinkGhost.Reset();
-                YellowGhost.Reset();
+                foreach (GhostColor color in ghostStateTimers.Keys)
+                {
+                    this.Ghosts[color].Reset();
+                }
                 Pacman.Reset();
                 Bonus = false;
                 lives--;
@@ -449,43 +404,40 @@ namespace PacmanWindowForms.Script.Controllers
         {
             if (dotList.Count == 0 && bonusList.Count == 0)
             {
-                parentForm.playSound(Properties.Resources.Pacman_Intermission);
-                State = GameState.GamePause;
+                parentForm.PlaySound(Properties.Resources.Pacman_Intermission);
+                State = GameState.GamePaused;
                 Thread.Sleep(5000);
-                dotList = PointLists.dotPointList();
-                bonusList = PointLists.bonusPointList();
+                dotList = MapLoader.Instance.DotList();
+                bonusList = MapLoader.Instance.BonusList();
                 ChangeLevel();
             }
         }
 
-        private bool IsCollisionWGhost(PacmanCharacter pacman, GhostCharacter ghost)
+        private bool IsCollisionWGhost(PacmanCharacter pacman, Ghost ghost)
         {
             List<Point> commonPoints = pacman.GetCore().Intersect(ghost.GetCore().Select(u => u)).ToList();
-            if (commonPoints.Count != 0 && ghost.ghostState != GhostState.Eaten)
+            if (commonPoints.Count != 0 && ghost.GhostState != GhostState.Eaten)
             {
                 return true;
             }
             return false;
         }
 
-        private void OnEatenGhost(PacmanCharacter pacman, GhostCharacter ghost)
+        private void OnEatenGhost(PacmanCharacter pacman, Ghost ghost)
         {
             this.score += eatenScore;
-            parentForm.playSound(Properties.Resources.Pacman_Eating_Ghost);
-            State = GameState.GamePause;
-            SetGhostState(ghost.GhostColor, GhostState.Eaten);
-            State = GameState.GameRun;
+            parentForm.PlaySound(Properties.Resources.Pacman_Eating_Ghost);
+            State = GameState.GamePaused;
+            SetGhostState(ghost.Color, GhostState.Eaten);
+            State = GameState.GameOn;
         }
 
-        private void OnEatenPacman(PacmanCharacter pacman, GhostCharacter ghost)
+        private void OnEatenPacman(PacmanCharacter pacman, Ghost ghost)
         {
-            State = GameState.GamePause;
-            parentForm.playSound(Properties.Resources.Pacman_Dies);
+            State = GameState.GamePaused;
+            parentForm.PlaySound(new MemoryStream(Properties.Resources.Pacman_Dies));
             Thread.Sleep(1000);
-            RedGhost.Reset();
-            BlueGhost.Reset();
-            PinkGhost.Reset();
-            YellowGhost.Reset();
+            GhostReset();
             Pacman.Reset();
             Bonus = false;
             lives--;
@@ -495,28 +447,28 @@ namespace PacmanWindowForms.Script.Controllers
             }
         }
 
+        private void GhostReset()
+        {
+            foreach (GhostColor color in ghostStateTimers.Keys)
+            {
+                this.Ghosts[color].Reset();
+            }
+        }
+
         private void CheckCollision(PacmanCharacter pacman)
         {
 
-            for (int i = 0; i < 4; i++)
+            foreach (GhostColor color in ghostStateTimers.Keys)
             {
-                GhostCharacter ghost = null;
-                switch (i)
-                {
-                    case 0: ghost = RedGhost; break;
-                    case 1: ghost = BlueGhost; break;
-                    case 2: ghost = PinkGhost; break;
-                    case 3: ghost = YellowGhost; break;
-                }
-                if (IsCollisionWGhost(pacman, ghost))
+                if (IsCollisionWGhost(pacman, this.Ghosts[color]))
                 {
                     if (Bonus)
                     {
-                        OnEatenGhost(pacman, ghost);
+                        OnEatenGhost(pacman, this.Ghosts[color]);
                     }
                     else
                     {
-                        OnEatenPacman(pacman, ghost);
+                        OnEatenPacman(pacman, this.Ghosts[color]);
                     }
                 }
             }
@@ -528,7 +480,7 @@ namespace PacmanWindowForms.Script.Controllers
             eatenScore = (!Bonus || eatenScore > 1600) ? 200 : eatenScore;
             foreach (GhostColor color in ghostStateTimers.Keys)
             {
-                if (Ghosts[color].ghostState == GhostState.Eaten)
+                if (Ghosts[color].GhostState == GhostState.Eaten)
                 {
                     continue;
                 }
@@ -537,10 +489,10 @@ namespace PacmanWindowForms.Script.Controllers
                 {
                     score += eatenScore;
                     eatenScore += eatenScore;
-                    parentForm.playSound(Properties.Resources.Pacman_Eating_Ghost);
-                    State = GameState.GamePause;
+                    parentForm.PlaySound(Properties.Resources.Pacman_Eating_Ghost);
+                    State = GameState.GamePaused;
                     SetGhostState(color, GhostState.Eaten);
-                    State = GameState.GameRun;
+                    State = GameState.GameOn;
                     return color;
                 }
             }
@@ -550,29 +502,24 @@ namespace PacmanWindowForms.Script.Controllers
         {
             //PacmanSpeed -= 3;
             GhostSpeed -= 3;
-            State = GameState.GamePause;
-            RedGhost.Reset();
-            BlueGhost.Reset();
-            PinkGhost.Reset();
-            YellowGhost.Reset();
+            State = GameState.GamePaused;
+            GhostReset();
             Pacman.Reset();
             Bonus = false;
             Level++;
         }
         public void SetGhostState(GhostColor color, GhostState state)
         {
-            switch (color)
-            {
-                case GhostColor.Red: RedGhost.ghostState = state; break;
-                case GhostColor.Blue: BlueGhost.ghostState = state; break;
-                case GhostColor.Pink: PinkGhost.ghostState = state; break;
-                case GhostColor.Yellow: YellowGhost.ghostState = state; break;
-            }
+            Ghosts[color].GhostState = state;
         }
 
         public void SetDirection(Direction d)
         {
-            Pacman.SetDirection(d);
+            if (State == GameState.GameOn)
+            {
+                Debug.WriteLine($"Set Direction {d} for Pacman");
+                Pacman.SetDirection(d);
+            }
         }
         public void Stop()
         {
@@ -581,16 +528,16 @@ namespace PacmanWindowForms.Script.Controllers
 
         public void Pause()
         {
-            if (State == GameState.GameRun)
+            if (State == GameState.GameOn)
             {
-                State = GameState.GamePause;
+                State = GameState.GamePaused;
             }
         }
-        public void Continue()
+        public void Resume()
         {
-            if (State == GameState.GamePause)
+            if (State == GameState.GamePaused)
             {
-                State = GameState.GameRun;
+                State = GameState.GameOn;
             }
         }
     }

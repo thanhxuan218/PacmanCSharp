@@ -1,7 +1,6 @@
 using PacmanWindowForms;
 using PacmanWindowForms.Forms;
-using PacmanWindowsForm.Script.Models;
-using PacmanWinForms;
+using PacmanWindowForms.Script.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,8 +21,12 @@ namespace PacmanWindowForms
         protected Point[] core;
         protected Task handler;
         public int speed = 70;
-        public GameState gameState = GameState.GameOver;
-        protected readonly GameBoard gameBoard;
+        public GameState _gameState = GameState.GamePaused;
+        public GameState gameState
+        { get { return _gameState; }
+          set { _gameState = value; } 
+        }
+        protected readonly MapLoader gameBoard;
         private bool isSprite = true;
         public abstract void Initialize();
         public abstract void Reset();
@@ -40,16 +43,15 @@ namespace PacmanWindowForms
         }
         public void Run()
         {
-            this.gameState = GameState.GameOn;
             handler = new Task(MainTask);
             handler.Start();
         }
-        private abstract void MainTask();
-        private abstract void Wait();
-        private abstract void Move(Point p, Direction dir);
-        private abstract void Stop();
-        private abstract bool IsCollision(Point curr, Point prev);
-        private abstract Point NextPoint(Point p, Direction dir);
+        protected abstract void MainTask();
+        protected abstract void Wait();
+        protected abstract Point Move(Point p, Direction dir);
+        protected abstract bool IsCollision(Point curr, Point prev);
+        protected abstract Point NextPoint(Point p, Direction dir);
+        public abstract void Stop();
         public abstract void Draw();
     }
 }

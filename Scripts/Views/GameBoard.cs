@@ -2,16 +2,15 @@
 using System.Windows.Forms;
 using System.Drawing;
 using System;
-using PacmanWinForms;
 using PacmanWindowForms;
-using PacmanWindowsForm.Script.Models;
+using PacmanWindowForms.Script.Models;
 
 public delegate void GhostPaint(Point point, Direction D, GhostColor color, bool sprite1, GhostState state);
-namespace PacmanWinForms
+namespace PacmanWindowForms.Script.Views
 {
     public static class ResourceHandler
     {
-        public static Dictionary<GhostColor, Dictionary<Direction, Image>> ghostNormalImg = new Dictionary<GhostColor, Dictionary<Direction, Image>>()
+        public static Dictionary<GhostColor, Dictionary<Direction, List<Image>>> ghostNormalImg = new Dictionary<GhostColor, Dictionary<Direction, List<Image>>>()
         {
             { GhostColor.Blue, new Dictionary<Direction, List<Image>>()
                 {
@@ -54,41 +53,25 @@ namespace PacmanWinForms
             { Direction.Left, Properties.Resources.eyesLeft }
         };
 
-        public static Dictionary<Direction, Image> ghostBonusImg = new Dictionary<Direction, Image>()
-        {
-            { Direction.Down, Properties.Resources.BonusBGhost1 },
-            { Direction.Up, Properties.Resources.BonusBGhost1 },
-            { Direction.Right, Properties.Resources.BonusBGhost1 },
-            { Direction.Left, Properties.Resources.BonusBGhost1 }
-        };
-
-        public static Dictionary<Direction, Image> ghostBonusEndImg = new Dictionary<Direction, Image>()
-        {
-            { Direction.Down, Properties.Resources.BonusWGhost1 },
-            { Direction.Up, Properties.Resources.BonusWGhost1 },
-            { Direction.Right, Properties.Resources.BonusWGhost1 },
-            { Direction.Left, Properties.Resources.BonusWGhost1 }
-        };
-
         public static Bitmap FindGhostImage(Direction D, GhostColor color, bool sprite, GhostState state)
         {
             if (state == GhostState.BonusEnd)
             {
-                if (sprite) return Properties.Resources.BonusWGhost1;
-                else return Properties.Resources.BonusWGhost2;
+                if (sprite) return new Bitmap(Properties.Resources.GhostScareEnd1);
+                else return new Bitmap(Properties.Resources.GhostsScareEnd2);
             }
             else if (state == GhostState.Bonus)
             {
-                if (sprite) return Properties.Resources.BonusBGhost1;
-                else return Properties.Resources.BonusBGhost2;
+                if (sprite) return new Bitmap(Properties.Resources.GhostScare1);
+                else return new Bitmap(Properties.Resources.GhostScare1);
             }
             else if (state == GhostState.Eaten)
             {
-                return ghostEatenImg[D];
+                return new Bitmap(ghostEatenImg[D]);
             }
             else
             {
-                return ghostNormalImg[color][D][sprite ? 0 : 1];
+                return new Bitmap(ghostNormalImg[color][D][sprite ? 0 : 1]);
             }
         }
 
@@ -116,14 +99,16 @@ namespace PacmanWinForms
 
         public PacmanBoard(Panel pnl, Color? bgColor = null)
         {
-            this.Rows = GameBoard.Instance.BoardHeight;
-            this.Cols = GameBoard.Instance.BoardWidth;
+            this.Rows = MapLoader.Instance.BoardHeight;
+            this.Cols = MapLoader.Instance.BoardWidth;
             this.BgColor = bgColor ?? Color.Black;
             this.pnl = pnl;
         }
 
         public void Resize()
         {
+            this.Rows = MapLoader.Instance.BoardHeight;
+            this.Cols = MapLoader.Instance.BoardWidth;
             cellHeight = pnl.Height / (float)Rows;
             cellWidth = pnl.Width / (float)Cols;
 
@@ -143,6 +128,7 @@ namespace PacmanWinForms
             Brush b = new SolidBrush(col);
             lock (this)
             {
+                //MessageBox.Show($"Draw at {p.ToString()} with width {cellWidth} height {cellHeight}");
                 g.FillRectangle(b, p.X * cellWidth, p.Y * cellHeight, cellWidth, cellHeight);
             }
         }
@@ -199,7 +185,7 @@ namespace PacmanWinForms
         }
         public void DrawGhost(Point P, Direction D, GhostColor color, bool sprite1, GhostState state)
         {
-            pnl.Invoke(new GhostPaint(ChangePic), P, D, color, sprite1, state);
+            pnl.Invoke(new GhostPaint(UpdateGhostImage), P, D, color, sprite1, state);
         }
         private void UpdateGhostImage(Point P, Direction D, GhostColor color, bool sprite1, GhostState state)
         {
@@ -268,7 +254,7 @@ namespace PacmanWinForms
                 case Direction.Down:
                     startAngle += 90;
                     break;
-                case Direction.Stop:
+                case Direction.None:
                     startAngle = 0; sweepAngle = 380;
                     break;
             }
